@@ -1,0 +1,7 @@
+todo shower
+deadline quiz /by monday
+event meeting /on tuesday /from 2pm /to 4pm
+list
+mark 2
+unmark 2
+bye

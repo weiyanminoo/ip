@@ -106,7 +106,8 @@ public class Baymax {
     }
 
     private static void addDeadline(String input) {
-        String[] parts = input.split(" /by ");
+        String description = input.substring(9).trim();
+        String[] parts = description.split(" /by ");
         if (parts.length < 2) {
             System.out.println(" Invalid deadline format. Use: deadline [description] /by [date]");
             return;
@@ -121,7 +122,8 @@ public class Baymax {
     }
 
     private static void addEvent(String input) {
-        String[] parts = input.split(" /on | /from | /to ");
+        String description = input.substring(6).trim();
+        String[] parts = description.split(" /on | /from | /to ");
         if (parts.length < 4) {
             System.out.println(" Invalid event format. Use: event [description] /on day /from [time] /to [time]");
             return;
