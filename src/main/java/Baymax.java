@@ -31,26 +31,17 @@ public class Baymax {
                 markTask(input);
             } else if (input.startsWith("unmark")) {
                 unmarkTask(input);
+            } else if (input.startsWith("todo")) {
+                addTodo(input);
+            } else if (input.startsWith("deadline")) {
+                addDeadline(input);
+            } else if (input.startsWith("event")) {
+                addEvent(input);
             } else {
-                addTask(input);
+                System.out.println(" Invalid command!");
             }
         }
         scanner.close();
-    }
-
-    // Add task as long as list is not full (100)
-    private static void addTask(String description) {
-        if (taskCount < 100) {
-            tasks[taskCount] = new Task(description);
-            taskCount++;
-            System.out.println("==========================================");
-            System.out.println(" added: " + description);
-            System.out.println("==========================================");
-        } else {
-            System.out.println("==========================================");
-            System.out.println(" Task limit reached! Unable to add more tasks.");
-            System.out.println("==========================================");
-        }
     }
 
     // List tasks if not empty
@@ -73,10 +64,10 @@ public class Baymax {
             int taskNumber = Integer.parseInt(input.split(" ")[1]);
             if (taskNumber > 0 && taskNumber <= taskCount) {
                 tasks[taskNumber - 1].markAsDone();
-                System.out.println("----------------------------------------------------");
+                System.out.println("==========================================");
                 System.out.println(" Good job on completing this task:");
                 System.out.println("   " + tasks[taskNumber - 1]);
-                System.out.println("----------------------------------------------------");
+                System.out.println("==========================================");
             } else {
                 System.out.println(" Invalid task number!");
             }
@@ -91,15 +82,56 @@ public class Baymax {
             int taskNumber = Integer.parseInt(input.split(" ")[1]);
             if (taskNumber > 0 && taskNumber <= taskCount) {
                 tasks[taskNumber - 1].markAsNotDone();
-                System.out.println("----------------------------------------------------");
+                System.out.println("==========================================");
                 System.out.println(" You have not finished this task:");
                 System.out.println("   " + tasks[taskNumber - 1]);
-                System.out.println("----------------------------------------------------");
+                System.out.println("==========================================");
             } else {
                 System.out.println(" Invalid task number!");
             }
         } catch (Exception e) {
             System.out.println(" Invalid input! Use: unmark [task_number]");
         }
+    }
+
+    private static void addTodo(String input) {
+        String description = input.substring(5).trim();
+        tasks[taskCount] = new Todo(description);
+        taskCount++;
+        System.out.println("==========================================");
+        System.out.println(" Alright, adding this Todo task:");
+        System.out.println("   " + tasks[taskCount - 1]);
+        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        System.out.println("==========================================");
+    }
+
+    private static void addDeadline(String input) {
+        String[] parts = input.split(" /by ");
+        if (parts.length < 2) {
+            System.out.println(" Invalid deadline format. Use: deadline [description] /by [date]");
+            return;
+        }
+        tasks[taskCount] = new Deadline(parts[0], parts[1]);
+        taskCount++;
+        System.out.println("==========================================");
+        System.out.println(" Alright, adding this Deadline:");
+        System.out.println("   " + tasks[taskCount - 1]);
+        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        System.out.println("==========================================");
+    }
+
+    private static void addEvent(String input) {
+        String[] parts = input.split(" /on | /from | /to ");
+        if (parts.length < 4) {
+            System.out.println(" Invalid event format. Use: event [description] /on day /from [time] /to [time]");
+            return;
+        }
+        tasks[taskCount] = new Event(parts[0], parts[1], parts[2], parts[3]);
+        taskCount++;
+        System.out.println("==========================================");
+        System.out.println(" Alright, adding this Event:");
+        System.out.println("   " + tasks[taskCount - 1]);
+        System.out.println(" Now you have " + taskCount + " tasks in the list.");
+        System.out.println("==========================================");
     }
 }
