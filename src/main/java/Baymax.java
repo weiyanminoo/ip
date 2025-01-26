@@ -1,10 +1,10 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Baymax {
 
-    // Store list of tasks
-    private static Task[] tasks = new Task[100];
-    private static int taskCount = 0;
+    // Store list of tasks using ArrayList
+    private static ArrayList<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -41,6 +41,8 @@ public class Baymax {
             markTask(input);
         } else if (input.startsWith("unmark")) {
             unmarkTask(input);
+        } else if (input.startsWith("delete")) {
+            deleteTask(input);
         } else if (input.startsWith("todo")) {
             addTodo(input);
         } else if (input.startsWith("deadline")) {
@@ -55,12 +57,12 @@ public class Baymax {
     // List tasks if not empty
     private static void listTasks() throws BaymaxException {
         System.out.println("==========================================");
-        if (taskCount == 0) {
+        if (tasks.isEmpty()) {
             throw new BaymaxException(" No tasks added yet!");
         }
         System.out.println(" Here are the tasks in your list:");
-        for (int i = 0; i < taskCount; i++) {
-            System.out.println(" " + (i + 1) + ". " + tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println(" " + (i + 1) + ". " + tasks.get(i));
         }
         System.out.println("==========================================");
     }
@@ -69,13 +71,13 @@ public class Baymax {
     private static void markTask(String input) throws BaymaxException {
         try {
             int taskNumber = Integer.parseInt(input.split(" ")[1]);
-            if (taskNumber <= 0 || taskNumber > taskCount) {
+            if (taskNumber <= 0 || taskNumber > tasks.size()) {
                 throw new BaymaxException("Task number out of range! Enter a valid task number.");
             }
-            tasks[taskNumber - 1].markAsDone();
+            tasks.get(taskNumber - 1).markAsDone();
             System.out.println("==========================================");
             System.out.println(" Good job on completing this task:");
-            System.out.println("   " + tasks[taskNumber - 1]);
+            System.out.println("   " + tasks.get(taskNumber - 1));
             System.out.println("==========================================");
         } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
             throw new BaymaxException("Invalid input! Use: mark [task_number]");
@@ -86,16 +88,33 @@ public class Baymax {
     private static void unmarkTask(String input) throws BaymaxException {
         try {
             int taskNumber = Integer.parseInt(input.split(" ")[1]);
-            if (taskNumber <= 0 || taskNumber > taskCount) {
+            if (taskNumber <= 0 || taskNumber > tasks.size()) {
                 throw new BaymaxException("Task number out of range! Enter a valid task number.");
             }
-            tasks[taskNumber - 1].markAsNotDone();
+            tasks.get(taskNumber - 1).markAsNotDone();
             System.out.println("==========================================");
             System.out.println(" You have not finished this task:");
-            System.out.println("   " + tasks[taskNumber - 1]);
+            System.out.println("   " + tasks.get(taskNumber - 1));
             System.out.println("==========================================");
         } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
             throw new BaymaxException("Invalid input! Use: unmark [task_number]");
+        }
+    }
+
+    private static void deleteTask(String input) throws BaymaxException {
+        try {
+            int taskNumber = Integer.parseInt(input.split(" ")[1]);
+            if (taskNumber <= 0 || taskNumber > tasks.size()) {
+                throw new BaymaxException("Task number out of range! Enter a valid task number.");
+            }
+            Task removedTask = tasks.remove(taskNumber - 1);
+            System.out.println("==========================================");
+            System.out.println(" Noted. I've removed this task:");
+            System.out.println("   " + removedTask);
+            System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+            System.out.println("==========================================");
+        } catch (ArrayIndexOutOfBoundsException | NumberFormatException e) {
+            throw new BaymaxException("Invalid input! Use: delete [task_number]");
         }
     }
 
@@ -105,12 +124,11 @@ public class Baymax {
             if (description.isEmpty()) {
                 throw new BaymaxException("The description of a todo cannot be empty!");
             }
-            tasks[taskCount] = new Todo(description);
-            taskCount++;
+            tasks.add(new Todo(description));
             System.out.println("==========================================");
             System.out.println(" Alright, adding this Todo task:");
-            System.out.println("   " + tasks[taskCount - 1]);
-            System.out.println(" Now you have " + taskCount + " tasks in the list.");
+            System.out.println("   " + tasks.get(tasks.size() - 1));
+            System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
             System.out.println("==========================================");
         } catch (StringIndexOutOfBoundsException e) {
             throw new BaymaxException("Invalid input! Use: todo [description]");
@@ -124,12 +142,11 @@ public class Baymax {
             if (parts.length < 2 || parts[0].isEmpty() || parts[1].isEmpty()) {
                 throw new BaymaxException("Invalid deadline format. Use: deadline [description] /by [date]");
             }
-            tasks[taskCount] = new Deadline(parts[0], parts[1]);
-            taskCount++;
+            tasks.add(new Deadline(parts[0], parts[1]));
             System.out.println("==========================================");
             System.out.println(" Alright, adding this Deadline:");
-            System.out.println("   " + tasks[taskCount - 1]);
-            System.out.println(" Now you have " + taskCount + " tasks in the list.");
+            System.out.println("   " + tasks.get(tasks.size() - 1));
+            System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
             System.out.println("==========================================");
         } catch (StringIndexOutOfBoundsException e) {
             throw new BaymaxException("Invalid input! Use: deadline [description] /by [date]");
@@ -143,12 +160,11 @@ public class Baymax {
             if (parts.length < 4) {
                 throw new BaymaxException("Invalid event format. Use: event [description] /on [day] /from [time] /to [time]");
             }
-            tasks[taskCount] = new Event(parts[0], parts[1], parts[2], parts[3]);
-            taskCount++;
+            tasks.add(new Event(parts[0], parts[1], parts[2], parts[3]));
             System.out.println("==========================================");
             System.out.println(" Alright, adding this Event:");
-            System.out.println("   " + tasks[taskCount - 1]);
-            System.out.println(" Now you have " + taskCount + " tasks in the list.");
+            System.out.println("   " + tasks.get(tasks.size() - 1));
+            System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
             System.out.println("==========================================");
         } catch (StringIndexOutOfBoundsException e) {
             throw new BaymaxException("Invalid input! Use: event [description] /on [day] /from [time] /to [time]");
