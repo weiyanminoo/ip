@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,8 +13,8 @@ public class Storage {
     }
 
     // Load tasks from the file
-    public ArrayList<Task> load() throws IOException {
-        ArrayList<Task> tasks = new ArrayList<>();
+    public List<Task> load() throws IOException {
+        List<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
 
         // If opening chatbot for the first time,
@@ -43,10 +44,10 @@ public class Storage {
                     tasks.add(new Deadline(description, parts[3], isDone));
                     break;
                 case "E":
-                    tasks.add(new Event(description, parts[3], isDone));
+                    tasks.add(new Event(description, parts[3], parts[4], parts[5], isDone));
                     break;
                 default:
-                    throw new IllegalArgumentException("Unknown task type!")
+                    throw new IllegalArgumentException("Unknown task type!");
             }
         }
         scanner.close();

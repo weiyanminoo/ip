@@ -1,6 +1,6 @@
 // Use Task class to represent tasks
 // instead of an array containing primitive value
-public class Task {
+public abstract class Task {
     protected String description;
     protected boolean isDone;
     protected TaskType type;
@@ -22,6 +22,8 @@ public class Task {
     public void markAsNotDone() {
         isDone = false;
     }
+
+    public abstract String toFileFormat();
 
     @Override
     public String toString() {
