@@ -72,5 +72,6 @@ public class Storage {
             writer.newLine();
         }
         writer.close();
+        System.out.println("Tasks saved to: " + new File(FILE_PATH).getAbsolutePath());
     }
 }

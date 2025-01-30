@@ -1,13 +1,20 @@
+import java.io.FileWriter;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Baymax {
 
+    private static final String FILE_NAME = "tasks.txt";
     // Store list of tasks using ArrayList
     private static ArrayList<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) {
 
+        loadTasks();
         Scanner scanner = new Scanner(System.in);
         // Greeting message
         System.out.println("==========================================");
@@ -19,6 +26,7 @@ public class Baymax {
             try {
                 String input = scanner.nextLine();
                 processCommand(input);
+                saveTasks();
             } catch (BaymaxException e) {
                 System.out.println("==========================================");
                 System.out.println(" " + e.getMessage());
@@ -34,6 +42,7 @@ public class Baymax {
             System.out.println("==========================================");
             System.out.println(" Byeee! Hope to see you again soon!");
             System.out.println("==========================================");
+            saveTasks();
             System.exit(0);
         } else if (input.equalsIgnoreCase("list")) {
             listTasks();
@@ -168,6 +177,38 @@ public class Baymax {
             System.out.println("==========================================");
         } catch (StringIndexOutOfBoundsException e) {
             throw new BaymaxException("Invalid input! Use: event [description] /on [day] /from [time] /to [time]");
+        }
+    }
+
+    private static void saveTasks() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
+            for (Task task : tasks) {
+                writer.write(task.toFileFormat());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving tasks: " + e.getMessage());
+        }
+    }
+
+    private static void loadTasks() {
+        File file = new File("tasks.txt");
+        if (!file.exists()) {
+            return;  // No file yet, nothing to load
+        }
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                try {
+                    Task task = Task.fromFileFormat(line);
+                    tasks.add(task);
+                } catch (BaymaxException e) {
+                    System.out.println("Skipping corrupted line: " + line);
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error loading tasks: " + e.getMessage());
         }
     }
 }
