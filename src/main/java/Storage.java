@@ -8,8 +8,13 @@ import java.util.Scanner;
 
 public class Storage {
 
+    private String filepath;
     private static final String DIRECTORY_PATH = "./data";
     private static final String FILE_PATH = DIRECTORY_PATH + "/tasks.txt";
+
+    public Storage(String filepath) {
+        this.filepath = filepath;
+    }
 
     // Load tasks from the file
     public List<Task> loadTasks() throws IOException {
