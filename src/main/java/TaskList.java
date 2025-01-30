@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -8,11 +9,22 @@ import java.util.ArrayList;
 public class TaskList {
 
     private ArrayList<Task> tasks;
+    private Storage storage;
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HHmm");
 
-    public TaskList() {
-        this.tasks = new ArrayList<>();
+    public TaskList(Storage storage) {
+        this.storage = storage;
+        this.tasks = new ArrayList<>(loadTasksFromStorage());
+    }
+
+    private ArrayList<Task> loadTasksFromStorage() {
+        try {
+            return new ArrayList<>(storage.loadTasks());
+        } catch (Exception e) {
+            System.out.println("Error loading tasks: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     public void addTodo(String input, UI ui) throws BaymaxException {
@@ -23,6 +35,7 @@ public class TaskList {
             }
             Task todo = new Todo(description);
             tasks.add(todo);
+            saveTasks();
             ui.addTaskMessage(todo, tasks.size());
         } catch (StringIndexOutOfBoundsException e) {
             throw new BaymaxException("Invalid input! Use: todo [description]");
@@ -41,6 +54,7 @@ public class TaskList {
                 LocalDateTime deadline = LocalDateTime.parse(parts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
                 Task deadlineTask = new Deadline(parts[0], parts[1]);
                 tasks.add(deadlineTask);
+                saveTasks();
                 ui.addTaskMessage(deadlineTask, tasks.size());
             } catch (DateTimeParseException e) {
                 throw new BaymaxException("Invalid format! Use: deadline [description] /by [yyyy-MM-dd HHmm]");
@@ -83,6 +97,7 @@ public class TaskList {
 
             Task event = new Event(parts[0], date.toString(), fromTime.toString(), toTime.toString());
             tasks.add(event);
+            saveTasks();
             ui.addTaskMessage(event, tasks.size());
 
         } catch (StringIndexOutOfBoundsException e) {
@@ -110,6 +125,7 @@ public class TaskList {
             task.markAsNotDone();
             ui.unmarkTaskMessage(task);
         }
+        saveTasks();
     }
 
     public void listTasks(UI ui) {
@@ -127,6 +143,14 @@ public class TaskList {
     public void printTasks() {
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println(" " + (i + 1) + ". " + tasks.get(i));
+        }
+    }
+
+    private void saveTasks() {
+        try {
+            storage.saveTasks(tasks);
+        } catch (IOException e) {
+            System.out.println("Error saving tasks: " + e.getMessage());
         }
     }
 }

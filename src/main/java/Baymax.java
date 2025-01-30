@@ -1,15 +1,15 @@
 public class Baymax {
 
     private UI ui;
+    private Storage storage;
     private TaskList taskList;
     private Parser parser;
-    private Storage storage;
 
     public Baymax(String filepath) {
         this.ui = new UI();
-        this.taskList = new TaskList();
-        this.parser = new Parser(taskList, ui);
         this.storage = new Storage(filepath);
+        this.taskList = new TaskList(storage);
+        this.parser = new Parser(taskList, ui);
     }
 
     public void run() {
@@ -25,6 +25,6 @@ public class Baymax {
     }
 
     public static void main(String[] args) {
-        new Baymax("tasks.txt").run();
+        new Baymax("./data/tasks.txt").run();
     }
 }
