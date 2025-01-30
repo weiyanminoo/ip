@@ -41,4 +41,20 @@ public class UI {
         }
         System.out.println("==========================================");
     }
+
+    public void addTaskMessage(Task task, int taskCount) {
+        System.out.println("==========================================");
+        System.out.println(" Okiee, adding this task:");
+        System.out.println("   " + task);
+        System.out.println(" Now you got " + taskCount + " total tasks.");
+        System.out.println("==========================================");
+    }
+
+    public void deleteTaskMessage(Task task, int taskCount) {
+        System.out.println("==========================================");
+        System.out.println(" Okiee, removing this task:");
+        System.out.println("   " + task);
+        System.out.println(" Now you got " + taskCount + " total tasks.");
+        System.out.println("==========================================");
+    }
 }
