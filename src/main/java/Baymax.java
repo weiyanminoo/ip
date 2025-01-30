@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -158,12 +159,18 @@ public class Baymax {
             if (parts.length < 2 || parts[0].isEmpty() || parts[1].isEmpty()) {
                 throw new BaymaxException("Invalid deadline format. Use: deadline [description] /by [date]");
             }
-            tasks.add(new Deadline(parts[0], parts[1]));
-            System.out.println("==========================================");
-            System.out.println(" Alright, adding this Deadline:");
-            System.out.println("   " + tasks.get(tasks.size() - 1));
-            System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
-            System.out.println("==========================================");
+
+            try {
+                LocalDateTime deadline = LocalDateTime.parse(parts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
+                tasks.add(new Deadline(parts[0], parts[1]));
+                System.out.println("==========================================");
+                System.out.println(" Alright, adding this Deadline:");
+                System.out.println("   " + tasks.get(tasks.size() - 1));
+                System.out.println(" Now you have " + tasks.size() + " tasks in the list.");
+                System.out.println("==========================================");
+            } catch (DateTimeParseException e) {
+                throw new BaymaxException("Invalid format! Use: deadline [description] /by [yyyy-MM-dd HHmm]");
+            }
         } catch (StringIndexOutOfBoundsException e) {
             throw new BaymaxException("Invalid input! Use: deadline [description] /by [date]");
         }
@@ -174,9 +181,30 @@ public class Baymax {
             String description = input.substring(6).trim();
             String[] parts = description.split(" /on | /from | /to ");
             if (parts.length < 4) {
-                throw new BaymaxException("Invalid event format. Use: event [description] /on [day] /from [time] /to [time]");
+                throw new BaymaxException("Invalid event format. Use: event [description] /on [date] /from [time] /to [time]");
             }
-            tasks.add(new Event(parts[0], parts[1], parts[2], parts[3]));
+
+            // Validate the date format
+            LocalDate date;
+            try {
+                date = LocalDate.parse(parts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            } catch (DateTimeParseException e) {
+                throw new BaymaxException("Invalid date format! Use: yyyy-MM-dd (e.g., 2025-01-30)");
+            }
+            // Validate start and end times
+            LocalTime fromTime, toTime;
+            try {
+                fromTime = LocalTime.parse(parts[2], DateTimeFormatter.ofPattern("HHmm"));
+                toTime = LocalTime.parse(parts[3], DateTimeFormatter.ofPattern("HHmm"));
+            } catch (DateTimeParseException e) {
+                throw new BaymaxException("Invalid time format! Use: /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
+            }
+            // Ensure start time is before end time
+            if (fromTime.isAfter(toTime)) {
+                throw new BaymaxException("Invalid time range! Start time must be before end time.");
+            }
+
+            tasks.add(new Event(parts[0], date.toString(), fromTime.toString(), toTime.toString()));
             System.out.println("==========================================");
             System.out.println(" Alright, adding this Event:");
             System.out.println("   " + tasks.get(tasks.size() - 1));
