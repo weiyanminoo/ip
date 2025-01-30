@@ -1,3 +1,8 @@
+package baymax.task;
+
+import baymax.task.Task;
+import baymax.task.TaskType;
+
 public class Todo extends Task {
 
     // Constructor for user input

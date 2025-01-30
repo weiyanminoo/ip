@@ -1,3 +1,11 @@
+package baymax;
+
+import baymax.exception.BaymaxException;
+import baymax.parser.Parser;
+import baymax.storage.Storage;
+import baymax.tasklist.TaskList;
+import baymax.ui.UI;
+
 public class Baymax {
 
     private UI ui;

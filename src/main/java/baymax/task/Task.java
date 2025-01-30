@@ -1,3 +1,7 @@
+package baymax.task;
+
+import baymax.exception.BaymaxException;
+
 // Use Task class to represent tasks
 // instead of an array containing primitive value
 public abstract class Task {

@@ -1,3 +1,10 @@
+package baymax.storage;
+
+import baymax.task.Deadline;
+import baymax.task.Task;
+import baymax.task.Todo;
+import baymax.task.Event;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.BufferedWriter;

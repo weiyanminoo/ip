@@ -1,3 +1,8 @@
+package baymax.ui;
+
+import baymax.task.Task;
+import baymax.tasklist.TaskList;
+
 import java.util.Scanner;
 
 public class UI {
