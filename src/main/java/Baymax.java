@@ -3,6 +3,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -11,6 +15,9 @@ public class Baymax {
     private static final String FILE_NAME = "tasks.txt";
     // Store list of tasks using ArrayList
     private static ArrayList<Task> tasks = new ArrayList<>();
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HHmm");
+
 
     public static void main(String[] args) {
 
@@ -191,24 +198,39 @@ public class Baymax {
         }
     }
 
-    private static void loadTasks() {
-        File file = new File("tasks.txt");
-        if (!file.exists()) {
-            return;  // No file yet, nothing to load
-        }
+    public static void loadTasks() {
+        try {
+            File file = new File("tasks.txt");
+            Scanner scanner = new Scanner(file);
 
-        try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                try {
-                    Task task = Task.fromFileFormat(line);
-                    tasks.add(task);
-                } catch (BaymaxException e) {
-                    System.out.println("Skipping corrupted line: " + line);
+                String[] parts = line.split(" \\| ");
+
+                String type = parts[0];
+                boolean isDone = parts[1].equals("1");
+                String description = parts[2];
+
+                if (type.equals("T")) {
+                    // ToDo Task
+                    tasks.add(new Todo(description, isDone));
+
+                } else if (type.equals("D")) {
+                    // Deadline Task
+                    LocalDateTime deadline = LocalDateTime.parse(parts[3], DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
+                    tasks.add(new Deadline(description, deadline.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm")), isDone));
+
+                } else if (type.equals("E")) {
+                    // Event Task
+                    LocalDate date = LocalDate.parse(parts[3], DATE_FORMAT);
+                    LocalTime from = LocalTime.parse(parts[4], TIME_FORMAT);
+                    LocalTime to = LocalTime.parse(parts[5], TIME_FORMAT);
+                    tasks.add(new Event(description, date.format(DATE_FORMAT), from.format(TIME_FORMAT), to.format(TIME_FORMAT), isDone));
                 }
             }
+            scanner.close();
         } catch (FileNotFoundException e) {
-            System.out.println("Error loading tasks: " + e.getMessage());
+            System.out.println("No saved tasks found.");
         }
     }
 }
