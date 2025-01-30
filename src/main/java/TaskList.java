@@ -8,17 +8,35 @@ public class TaskList {
         tasks = new ArrayList<>();
     }
 
-    public void addTask(Task task UI ui) {
+    public void addTask(Task task, UI ui) {
         tasks.add(task);
-
+        ui.addTaskMessage(task, tasks.size());
     }
 
     public void deleteTask(int index, UI ui) throws BaymaxException {
-
+        if (index < 0 || index >= tasks.size()) {
+            throw new BaymaxException("Task number out of range!");
+        }
+        Task removedTask = tasks.remove(index);
+        ui.deleteTaskMessage(removedTask, tasks.size());
     }
 
-    public void markTask(int index, boolean isDone, Ui ui) throws BaymaxException {
+    public void markTask(int index, boolean isDone, UI ui) throws BaymaxException {
+        if (index < 0 || index >= tasks.size()) {
+            throw new BaymaxException("Task number out of range!");
+        }
+        Task task = tasks.get(index);
+        if (isDone) {
+            task.markAsDone();
+            ui.markTaskMessage(task);
+        } else {
+            task.markAsNotDone();
+            ui.unmarkTaskMessage(task);
+        }
+    }
 
+    public void listTasks(UI ui) {
+        ui.taskListMessage(this);
     }
 
     public boolean isEmpty() {
