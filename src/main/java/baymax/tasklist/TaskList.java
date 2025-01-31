@@ -28,6 +28,11 @@ public class TaskList {
         this.tasks = new ArrayList<>(loadTasksFromStorage());
     }
 
+    // Constructor for testing
+    public TaskList() {
+        this.tasks = new ArrayList<>();
+    }
+
     private ArrayList<Task> loadTasksFromStorage() {
         try {
             return new ArrayList<>(storage.loadTasks());
@@ -157,6 +162,9 @@ public class TaskList {
     }
 
     private void saveTasks() {
+        if (storage == null) {
+            return;
+        }
         try {
             storage.saveTasks(tasks);
         } catch (IOException e) {
