@@ -36,7 +36,7 @@ public abstract class Task {
     public String getDescription() {
         return description;
     }
-    
+
     /**
      * Marks the task as done.
      */
