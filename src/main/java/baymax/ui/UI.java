@@ -3,6 +3,7 @@ package baymax.ui;
 import baymax.task.Task;
 import baymax.tasklist.TaskList;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class UI {
@@ -74,6 +75,19 @@ public class UI {
         System.out.println("==========================================");
         System.out.println(" Oh no, you haven't complete this:");
         System.out.println("   " + task);
+        System.out.println("==========================================");
+    }
+
+    public void matchingTaskMessage(ArrayList<Task> matchingTasks) {
+        System.out.println("==========================================");
+        if (matchingTasks.isEmpty()) {
+            System.out.println(" You don't have this task in your list!");
+        } else {
+            System.out.println(" Here are the task(s):");
+            for (int i = 0; i < matchingTasks.size(); i++) {
+                System.out.println(" " + (i + 1) + ". " + matchingTasks.get(i));
+            }
+        }
         System.out.println("==========================================");
     }
 }

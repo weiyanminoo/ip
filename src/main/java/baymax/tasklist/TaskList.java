@@ -171,4 +171,22 @@ public class TaskList {
             System.out.println("Error saving tasks: " + e.getMessage());
         }
     }
+
+    /**
+     * Finds tasks that contain the specified keyword in their description.
+     *
+     * @param keyword The search keyword to match against task descriptions.
+     * @param ui      The UI component responsible for displaying the results.
+     */
+    public void findTasks(String keyword, UI ui) {
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                matchingTasks.add(task);
+            }
+        }
+
+        ui.matchingTaskMessage(matchingTasks);
+    }
 }
