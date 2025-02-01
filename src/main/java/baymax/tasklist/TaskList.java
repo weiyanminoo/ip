@@ -16,6 +16,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
+/**
+ * Manages a list of tasks and provides methods to modify and retrieve tasks.
+ */
 public class TaskList {
 
     private ArrayList<Task> tasks;
@@ -23,16 +26,28 @@ public class TaskList {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HHmm");
 
+    /**
+     * Constructs a TaskList with storage integration.
+     *
+     * @param storage The storage system to save and load tasks.
+     */
     public TaskList(Storage storage) {
         this.storage = storage;
         this.tasks = new ArrayList<>(loadTasksFromStorage());
     }
 
-    // Constructor for testing
+    /**
+     * Constructs an empty TaskList (used for testing).
+     */
     public TaskList() {
         this.tasks = new ArrayList<>();
     }
 
+    /**
+     * Loads tasks from storage.
+     *
+     * @return A list of previously added tasks.
+     */
     private ArrayList<Task> loadTasksFromStorage() {
         try {
             return new ArrayList<>(storage.loadTasks());
@@ -42,6 +57,13 @@ public class TaskList {
         }
     }
 
+    /**
+     * Adds a ToDo task to the list.
+     *
+     * @param input The full input command.
+     * @param ui The UI instance for user interaction.
+     * @throws BaymaxException If the input is invalid.
+     */
     public void addTodo(String input, UI ui) throws BaymaxException {
         try {
             String description = input.substring(5).trim();
@@ -57,6 +79,13 @@ public class TaskList {
         }
     }
 
+    /**
+     * Adds a Deadline task to the list.
+     *
+     * @param input The full input command containing the description and deadline date.
+     * @param ui The UI instance for user interaction.
+     * @throws BaymaxException If the input format is invalid.
+     */
     public void addDeadline(String input, UI ui) throws BaymaxException {
         try {
             String description = input.substring(9).trim();
@@ -79,6 +108,13 @@ public class TaskList {
         }
     }
 
+    /**
+     * Adds an Event task to the list.
+     *
+     * @param input The full input command containing the description, date, and time range.
+     * @param ui    The UI instance for user interaction.
+     * @throws BaymaxException If the input format is invalid.
+     */
     public void addEvent(String input, UI ui) throws BaymaxException {
         try {
             String description = input.substring(6).trim();
@@ -120,6 +156,13 @@ public class TaskList {
         }
     }
 
+    /**
+     * Deletes a task from the list.
+     *
+     * @param index The index of the task to delete.
+     * @param ui The UI instance for user interaction.
+     * @throws BaymaxException If the index is out of range.
+     */
     public void deleteTask(int index, UI ui) throws BaymaxException {
         if (index < 0 || index >= tasks.size()) {
             throw new BaymaxException("Task number out of range!");
@@ -128,6 +171,14 @@ public class TaskList {
         ui.deleteTaskMessage(removedTask, tasks.size());
     }
 
+    /**
+     * Marks a task as done or not done.
+     *
+     * @param index The index of the task.
+     * @param isDone True if marking as done, false if unmarking.
+     * @param ui The UI instance for user interaction.
+     * @throws BaymaxException If the index is out of range.
+     */
     public void markTask(int index, boolean isDone, UI ui) throws BaymaxException {
         if (index < 0 || index >= tasks.size()) {
             throw new BaymaxException("Task number out of range!");
@@ -143,24 +194,45 @@ public class TaskList {
         saveTasks();
     }
 
+    /**
+     * Displays the list of tasks.
+     *
+     * @param ui The UI instance for user interaction.
+     */
     public void listTasks(UI ui) {
         ui.taskListMessage(this);
     }
 
+    /**
+     * Checks if the task list is empty.
+     *
+     * @return True if the list is empty, false otherwise.
+     */
     public boolean isEmpty() {
         return tasks.isEmpty();
     }
 
+    /**
+     * Retrieves the list of tasks.
+     *
+     * @return The list of tasks.
+     */
     public ArrayList<Task> getTasks() {
         return tasks;
     }
 
+    /**
+     * Prints the list of tasks to the console.
+     */
     public void printTasks() {
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println(" " + (i + 1) + ". " + tasks.get(i));
         }
     }
 
+    /**
+     * Saves the task list to storage.
+     */
     private void saveTasks() {
         if (storage == null) {
             return;

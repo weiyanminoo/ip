@@ -6,6 +6,10 @@ import baymax.storage.Storage;
 import baymax.tasklist.TaskList;
 import baymax.ui.UI;
 
+/**
+ * The main entry point for the Baymax application.
+ * This class initializes the necessary components and runs the program.
+ */
 public class Baymax {
 
     private UI ui;
@@ -13,6 +17,11 @@ public class Baymax {
     private TaskList taskList;
     private Parser parser;
 
+    /**
+     * Constructs a Baymax instance and initializes its components.
+     *
+     * @param filepath The file path to load and save tasks.
+     */
     public Baymax(String filepath) {
         this.ui = new UI();
         this.storage = new Storage(filepath);
@@ -20,6 +29,9 @@ public class Baymax {
         this.parser = new Parser(taskList, ui);
     }
 
+    /**
+     * Runs the main program loop, continuously reading and processing user input.
+     */
     public void run() {
         ui.welcomeMessage();
         while (true) {
@@ -32,6 +44,11 @@ public class Baymax {
         }
     }
 
+    /**
+     * The main method to start the Baymax application.
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         new Baymax("./data/tasks.txt").run();
     }
