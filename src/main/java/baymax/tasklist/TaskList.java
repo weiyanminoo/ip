@@ -125,6 +125,7 @@ public class TaskList {
             throw new BaymaxException("Task number out of range!");
         }
         Task removedTask = tasks.remove(index);
+        saveTasks();
         ui.deleteTaskMessage(removedTask, tasks.size());
     }
 
