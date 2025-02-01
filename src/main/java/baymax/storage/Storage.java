@@ -13,17 +13,30 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Handles loading and saving tasks to a file.
+ */
 public class Storage {
 
     private String filepath;
     private static final String DIRECTORY_PATH = "./data";
     private static final String FILE_PATH = DIRECTORY_PATH + "/tasks.txt";
 
+    /**
+     * Constructs a Storage instance.
+     *
+     * @param filepath The file path to load and save tasks.
+     */
     public Storage(String filepath) {
         this.filepath = filepath;
     }
 
-    // Load tasks from the file
+    /**
+     * Loads tasks from the file.
+     *
+     * @return A list of tasks retrieved from the file.
+     * @throws IOException If an error occurs while reading the file.
+     */
     public List<Task> loadTasks() throws IOException {
         List<Task> tasks = new ArrayList<>();
         File file = new File(FILE_PATH);
@@ -71,7 +84,12 @@ public class Storage {
         return tasks;
     }
 
-    // Save tasks from the file
+    /**
+     * Saves tasks to the file.
+     *
+     * @param tasks The list of tasks to be saved.
+     * @throws IOException If an error occurs while writing to the file.
+     */
     public void saveTasks(List<Task> tasks) throws IOException {
         File directory = new File(DIRECTORY_PATH);
         if (!directory.exists()) {

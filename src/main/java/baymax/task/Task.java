@@ -2,31 +2,58 @@ package baymax.task;
 
 import baymax.exception.BaymaxException;
 
-// Use Task class to represent tasks
-// instead of an array containing primitive value
+/**
+ * Represents an abstract task that can be managed by the Baymax application.
+ * This class provides common attributes and methods for all task types.
+ */
 public abstract class Task {
     protected String description;
     protected boolean isDone;
     protected TaskType type;
 
+    /**
+     * Constructs a Task with the specified description and type.
+     * By default, the task is set to not done.
+     *
+     * @param description The description of the task.
+     * @param type        The type of task (e.g., TODO, DEADLINE, EVENT).
+     */
     public Task(String description, TaskType type) {
         this.description = description;
         this.isDone = false;
         this.type = type;
     }
 
+    /**
+     * Returns the status icon of the task.
+     *
+     * @return "X" if the task is completed, otherwise a blank space.
+     */
     public String getStatusIcon() {
         return (isDone ? "X" : " ");
     }
 
+    /**
+     * Marks the task as done.
+     */
     public void markAsDone() {
         isDone = true;
     }
 
+    /**
+     * Marks the task as not done.
+     */
     public void markAsNotDone() {
         isDone = false;
     }
 
+    /**
+     * Converts a line from the saved file back into a Task object.
+     *
+     * @param line The line from the file, formatted as "T | 0 | description".
+     * @return The corresponding Task object.
+     * @throws BaymaxException If the data format is invalid or corrupted.
+     */
     public static Task fromFileFormat(String line) throws BaymaxException {
         String[] parts = line.split(" \\| ");
         if (parts.length < 3) {
@@ -63,8 +90,18 @@ public abstract class Task {
         }
     }
 
+    /**
+     * Converts the task to a format suitable for saving to a file.
+     *
+     * @return The formatted string representation of the task.
+     */
     public abstract String toFileFormat();
 
+    /**
+     * Returns a string representation of the task, including its status and description.
+     *
+     * @return The formatted task string.
+     */
     @Override
     public String toString() {
         return "[" + getStatusIcon() + "] " + description;
