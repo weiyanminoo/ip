@@ -59,6 +59,12 @@ public class Parser {
             case "event":
                 taskList.addEvent(input, ui);
                 break;
+            case "find":
+                if (words.length < 2) {
+                    throw new BaymaxException("Invalid input! Use: find [keyword]");
+                }
+                taskList.findTasks(words[1], ui);
+                break;
             default:
                 throw new BaymaxException("Invalid command!");
         }
