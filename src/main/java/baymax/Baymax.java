@@ -30,26 +30,17 @@ public class Baymax {
     }
 
     /**
-     * Runs the main program loop, continuously reading and processing user input.
+     * Handles user input and returns the chatbot's response.
+     *
+     * @param input The user command.
+     * @return Baymax's response.
      */
-    public void run() {
-        ui.welcomeMessage();
-        while (true) {
-            try {
-                String input = ui.readCommand();
-                parser.processCommand(input);
-            } catch (BaymaxException e) {
-                ui.errorMessage(e.getMessage());
-            }
+    public String getResponse(String input) {
+        try {
+            return parser.processCommand(input);
+        } catch (BaymaxException e) {
+            return "Error: " + e.getMessage();
         }
     }
 
-    /**
-     * The main method to start the Baymax application.
-     *
-     * @param args Command-line arguments (not used).
-     */
-    public static void main(String[] args) {
-        new Baymax("./data/tasks.txt").run();
-    }
 }

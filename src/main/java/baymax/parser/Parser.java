@@ -29,42 +29,27 @@ public class Parser {
      * @param input The command given by the user.
      * @throws BaymaxException If the command is invalid.
      */
-    public void processCommand(String input) throws BaymaxException {
+    public String processCommand(String input) throws BaymaxException {
         String[] words = input.split(" ", 2);
         String command = words[0];
 
         switch (command) {
             case "bye":
-                ui.exitMessage();
-                System.exit(0);
-                break;
+                return "Byeee! Take care human!";
             case "list":
-                taskList.listTasks(ui);
-                break;
+                return taskList.listTasks();
             case "mark":
-                taskList.markTask(parseIndex(words), true, ui);
-                break;
+                return taskList.markTask(parseIndex(words), true);
             case "unmark":
-                taskList.markTask(parseIndex(words), false, ui);
-                break;
+                return taskList.markTask(parseIndex(words), false);
             case "delete":
-                taskList.deleteTask(parseIndex(words), ui);
-                break;
+                return taskList.deleteTask(parseIndex(words));
             case "todo":
-                taskList.addTodo(input, ui);
-                break;
+                return taskList.addTodo(input);
             case "deadline":
-                taskList.addDeadline(input, ui);
-                break;
+                return taskList.addDeadline(input);
             case "event":
-                taskList.addEvent(input, ui);
-                break;
-            case "find":
-                if (words.length < 2) {
-                    throw new BaymaxException("Invalid input! Use: find [keyword]");
-                }
-                taskList.findTasks(words[1], ui);
-                break;
+                return taskList.addEvent(input);
             default:
                 throw new BaymaxException("Invalid command!");
         }

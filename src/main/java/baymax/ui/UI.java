@@ -1,5 +1,6 @@
 package baymax.ui;
 
+import baymax.gui.MainWindow;
 import baymax.task.Task;
 import baymax.tasklist.TaskList;
 
@@ -7,12 +8,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Handles user interactions in the Baymax application.
+ * Handles user interactions in both CLI and GUI modes.
  * Responsible for displaying messages according to user input.
  */
 public class UI {
 
     private Scanner scanner;
+    private MainWindow mainWindow;
 
     /**
      * Constructs a UI instance with a Scanner to read user input.
@@ -22,122 +24,70 @@ public class UI {
     }
 
     /**
-     * Reads a command inputted by the user.
+     * Sets the JavaFX MainWindow reference.
      *
-     * @return The user input as a string.
+     * @param mainWindow The JavaFX UI controller.
      */
-    public String readCommand() {
-        return scanner.nextLine();
+    public void setMainWindow(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
     }
 
     /**
-     * Displays the welcome message.
-     */
-    public void welcomeMessage() {
-        System.out.println("==========================================");
-        System.out.println(" Wassup! I'm Baymax");
-        System.out.println(" How can I help you?");
-        System.out.println("==========================================");
-    }
-
-    /**
-     * Displays the exit message.
-     */
-    public void exitMessage() {
-        System.out.println("==========================================");
-        System.out.println(" Byeee! Take care human!");
-        System.out.println("==========================================");
-    }
-
-    /**
-     * Displays an error message.
+     * Sends a message to either CLI (console) or GUI (JavaFX).
      *
-     * @param message The error message to be displayed.
+     * @param message The message to be displayed.
      */
-    public void errorMessage(String message) {
-        System.out.println("==========================================");
-        System.out.println(" Error: " + message);
-        System.out.println("==========================================");
-    }
-
-    /**
-     * Displays the list of tasks.
-     *
-     * @param tasks The TaskList containing tasks to be displayed.
-     */
-    public void taskListMessage(TaskList tasks) {
-        System.out.println("==========================================");
-        if (tasks.isEmpty()) {
-            System.out.println(" You got no tasks!");
+    public String sendMessage(String message) {
+        if (mainWindow != null) {
+            mainWindow.displayMessage(message);  // Display in JavaFX
         } else {
-            System.out.println(" Here's your task list:");
+            System.out.println(message);  // Print in CLI
+        }
+        return message;
+    }
+
+    public void welcomeMessage() {
+        sendMessage("Wassup! I'm Baymax. How can I help you?");
+    }
+
+    public void exitMessage() {
+        sendMessage("Byeee! Take care human!");
+    }
+
+    public void taskListMessage(TaskList tasks) {
+        if (tasks.isEmpty()) {
+            sendMessage("You got no tasks!");
+        } else {
+            sendMessage("Here's your task list:");
             tasks.printTasks();
         }
-        System.out.println("==========================================");
     }
 
-    /**
-     * Displays a message when a task is added.
-     *
-     * @param task The task that was added.
-     * @param taskCount The total number of tasks after adding the new task.
-     */
     public void addTaskMessage(Task task, int taskCount) {
-        System.out.println("==========================================");
-        System.out.println(" Okiee, adding this task:");
-        System.out.println("   " + task);
-        System.out.println(" Now you got " + taskCount + " total tasks.");
-        System.out.println("==========================================");
+        sendMessage("Okiee, adding this task:\n   " + task + "\nNow you got " + taskCount + " total tasks.");
     }
 
-    /**
-     * Displays a message when a task is deleted.
-     *
-     * @param task The task that was deleted.
-     * @param taskCount The total number of tasks after deletion.
-     */
     public void deleteTaskMessage(Task task, int taskCount) {
-        System.out.println("==========================================");
-        System.out.println(" Okiee, removing this task:");
-        System.out.println("   " + task);
-        System.out.println(" Now you got " + taskCount + " total tasks.");
-        System.out.println("==========================================");
+        sendMessage("Okiee, removing this task:\n   " + task + "\nNow you got " + taskCount + " total tasks.");
     }
 
-    /**
-     * Displays a message when a task is marked as completed.
-     *
-     * @param task The task that was marked as completed.
-     */
     public void markTaskMessage(Task task) {
-        System.out.println("==========================================");
-        System.out.println(" Congrats on completing this:");
-        System.out.println("   " + task);
-        System.out.println("==========================================");
+        sendMessage("Congrats on completing this:\n   " + task);
     }
 
-    /**
-     * Displays a message when a task is unmarked as completed.
-     *
-     * @param task The task that was unmarked.
-     */
     public void unmarkTaskMessage(Task task) {
-        System.out.println("==========================================");
-        System.out.println(" Oh no, you haven't complete this:");
-        System.out.println("   " + task);
-        System.out.println("==========================================");
+        sendMessage("Oh no, you haven't completed this:\n   " + task);
     }
 
     public void matchingTaskMessage(ArrayList<Task> matchingTasks) {
-        System.out.println("==========================================");
         if (matchingTasks.isEmpty()) {
-            System.out.println(" You don't have this task in your list!");
+            sendMessage("You don't have this task in your list!");
         } else {
-            System.out.println(" Here are the task(s):");
+            StringBuilder response = new StringBuilder("Here are the task(s):\n");
             for (int i = 0; i < matchingTasks.size(); i++) {
-                System.out.println(" " + (i + 1) + ". " + matchingTasks.get(i));
+                response.append(" ").append(i + 1).append(". ").append(matchingTasks.get(i)).append("\n");
             }
+            sendMessage(response.toString());
         }
-        System.out.println("==========================================");
     }
 }
