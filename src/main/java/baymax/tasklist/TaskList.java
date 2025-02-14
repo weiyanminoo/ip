@@ -61,10 +61,9 @@ public class TaskList {
      * Adds a ToDo task to the list.
      *
      * @param input The full input command.
-     * @param ui The UI instance for user interaction.
      * @throws BaymaxException If the input is invalid.
      */
-    public void addTodo(String input, UI ui) throws BaymaxException {
+    public String addTodo(String input) throws BaymaxException {
         try {
             String description = input.substring(5).trim();
             if (description.isEmpty()) {
@@ -73,7 +72,7 @@ public class TaskList {
             Task todo = new Todo(description);
             tasks.add(todo);
             saveTasks();
-            ui.addTaskMessage(todo, tasks.size());
+            return "Added task:\n  " + todo + "\nNow you have " + tasks.size() + " tasks in the list.";
         } catch (StringIndexOutOfBoundsException e) {
             throw new BaymaxException("Invalid input! Use: todo [description]");
         }
@@ -83,10 +82,9 @@ public class TaskList {
      * Adds a Deadline task to the list.
      *
      * @param input The full input command containing the description and deadline date.
-     * @param ui The UI instance for user interaction.
      * @throws BaymaxException If the input format is invalid.
      */
-    public void addDeadline(String input, UI ui) throws BaymaxException {
+    public String addDeadline(String input) throws BaymaxException {
         try {
             String description = input.substring(9).trim();
             String[] parts = description.split(" /by ");
@@ -94,17 +92,13 @@ public class TaskList {
                 throw new BaymaxException("Invalid deadline format. Use: deadline [description] /by [yyyy-MM-dd HHmm]");
             }
 
-            try {
-                LocalDateTime deadline = LocalDateTime.parse(parts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
-                Task deadlineTask = new Deadline(parts[0], parts[1]);
-                tasks.add(deadlineTask);
-                saveTasks();
-                ui.addTaskMessage(deadlineTask, tasks.size());
-            } catch (DateTimeParseException e) {
-                throw new BaymaxException("Invalid format! Use: deadline [description] /by [yyyy-MM-dd HHmm]");
-            }
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new BaymaxException("Invalid input! Use: deadline [description] /by [date]");
+            LocalDateTime deadline = LocalDateTime.parse(parts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
+            Task deadlineTask = new Deadline(parts[0], parts[1]);
+            tasks.add(deadlineTask);
+            saveTasks();
+            return "Added task:\n  " + deadlineTask + "\nNow you have " + tasks.size() + " tasks in the list.";
+        } catch (DateTimeParseException e) {
+            throw new BaymaxException("Invalid format! Use: deadline [description] /by [yyyy-MM-dd HHmm]");
         }
     }
 
@@ -112,36 +106,20 @@ public class TaskList {
      * Adds an Event task to the list.
      *
      * @param input The full input command containing the description, date, and time range.
-     * @param ui    The UI instance for user interaction.
      * @throws BaymaxException If the input format is invalid.
      */
-    public void addEvent(String input, UI ui) throws BaymaxException {
+    public String addEvent(String input) throws BaymaxException {
         try {
             String description = input.substring(6).trim();
             String[] parts = description.split(" /on | /from | /to ");
             if (parts.length < 4) {
-                throw new BaymaxException("Invalid event format. " +
-                        "Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
+                throw new BaymaxException("Invalid event format. Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
             }
 
-            // Validate date format
-            LocalDate date;
-            try {
-                date = LocalDate.parse(parts[1], DATE_FORMAT);
-            } catch (DateTimeParseException e) {
-                throw new BaymaxException("Invalid date format! Use: yyyy-MM-dd (e.g., 2025-01-30)");
-            }
+            LocalDate date = LocalDate.parse(parts[1], DATE_FORMAT);
+            LocalTime fromTime = LocalTime.parse(parts[2], TIME_FORMAT);
+            LocalTime toTime = LocalTime.parse(parts[3], TIME_FORMAT);
 
-            // Validate start and end times
-            LocalTime fromTime, toTime;
-            try {
-                fromTime = LocalTime.parse(parts[2], TIME_FORMAT);
-                toTime = LocalTime.parse(parts[3], TIME_FORMAT);
-            } catch (DateTimeParseException e) {
-                throw new BaymaxException("Invalid time format! Use: /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
-            }
-
-            // Ensure start time is before end time
             if (fromTime.isAfter(toTime)) {
                 throw new BaymaxException("Invalid time range! Start time must be before end time.");
             }
@@ -149,10 +127,9 @@ public class TaskList {
             Task event = new Event(parts[0], date.toString(), fromTime.toString(), toTime.toString());
             tasks.add(event);
             saveTasks();
-            ui.addTaskMessage(event, tasks.size());
-
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new BaymaxException("Invalid input! Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
+            return "Added task:\n  " + event + "\nNow you have " + tasks.size() + " tasks in the list.";
+        } catch (DateTimeParseException e) {
+            throw new BaymaxException("Invalid date/time format! Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
         }
     }
 
@@ -160,16 +137,15 @@ public class TaskList {
      * Deletes a task from the list.
      *
      * @param index The index of the task to delete.
-     * @param ui The UI instance for user interaction.
      * @throws BaymaxException If the index is out of range.
      */
-    public void deleteTask(int index, UI ui) throws BaymaxException {
+    public String deleteTask(int index) throws BaymaxException {
         if (index < 0 || index >= tasks.size()) {
             throw new BaymaxException("Task number out of range!");
         }
         Task removedTask = tasks.remove(index);
         saveTasks();
-        ui.deleteTaskMessage(removedTask, tasks.size());
+        return "Removed task:\n  " + removedTask + "\nNow you have " + tasks.size() + " tasks in the list.";
     }
 
     /**
@@ -177,31 +153,36 @@ public class TaskList {
      *
      * @param index The index of the task.
      * @param isDone True if marking as done, false if unmarking.
-     * @param ui The UI instance for user interaction.
      * @throws BaymaxException If the index is out of range.
      */
-    public void markTask(int index, boolean isDone, UI ui) throws BaymaxException {
+    public String markTask(int index, boolean isDone) throws BaymaxException {
         if (index < 0 || index >= tasks.size()) {
             throw new BaymaxException("Task number out of range!");
         }
         Task task = tasks.get(index);
         if (isDone) {
             task.markAsDone();
-            ui.markTaskMessage(task);
+            saveTasks();
+            return "Marked task as done:\n  " + task;
         } else {
             task.markAsNotDone();
-            ui.unmarkTaskMessage(task);
+            saveTasks();
+            return "Marked task as not done:\n  " + task;
         }
-        saveTasks();
     }
 
     /**
      * Displays the list of tasks.
-     *
-     * @param ui The UI instance for user interaction.
      */
-    public void listTasks(UI ui) {
-        ui.taskListMessage(this);
+    public String listTasks() {
+        if (tasks.isEmpty()) {
+            return "You have no tasks in your list!";
+        }
+        StringBuilder sb = new StringBuilder("Here are your tasks:\n");
+        for (int i = 0; i < tasks.size(); i++) {
+            sb.append((i + 1)).append(". ").append(tasks.get(i)).append("\n");
+        }
+        return sb.toString().trim();
     }
 
     /**
