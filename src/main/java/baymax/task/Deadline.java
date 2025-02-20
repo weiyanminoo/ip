@@ -21,6 +21,7 @@ public class Deadline extends Task{
      */
     public Deadline(String description, String deadline) {
         super(description, TaskType.DEADLINE);
+        assert deadline != null && !deadline.trim().isEmpty() : "Deadline date cannot be null or empty";
         this.deadline = LocalDateTime.parse(deadline, INPUT_FORMAT);
     }
 
@@ -34,6 +35,7 @@ public class Deadline extends Task{
      */
     public Deadline(String description, String deadline, boolean isDone) {
         super(description, TaskType.DEADLINE);
+        assert deadline != null && !deadline.trim().isEmpty() : "Deadline date cannot be null or empty";
         this.deadline = LocalDateTime.parse(deadline, INPUT_FORMAT);
         this.isDone = isDone;
     }
