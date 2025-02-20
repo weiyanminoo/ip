@@ -61,6 +61,9 @@ public class Storage {
                 boolean isDone = parts[1].equals("1");
                 String description = parts[2];
 
+                assert type != null : "Task type should not be null";
+                assert description != null && !description.isEmpty() : "Task description should not be empty";
+
                 switch (type) {
                     case "T":
                         tasks.add(new Todo(description, isDone));
