@@ -1,36 +1,63 @@
 package baymax.tasklist;
-/*
+
 import baymax.exception.BaymaxException;
-import baymax.task.Task;
 import baymax.task.Todo;
-import baymax.ui.UI;
+import baymax.task.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskListTest {
 
     private TaskList taskList;
-    private UI ui;
 
     @BeforeEach
     void setUp() {
-        taskList = new TaskList();
-        ui = new UI();
+        taskList = new TaskList(); // Use empty constructor to avoid file I/O
     }
 
     @Test
-    public void testAddTodoTask() throws BaymaxException {
-        int initialSize = taskList.getTasks().size();
+    void addTodo_validInput_taskAdded() throws BaymaxException {
+        String response = taskList.addTodo("todo Read book");
+        assertEquals(1, taskList.getTasks().size());
+        assertTrue(response.contains("Read book"));
+    }
 
-        taskList.addTodo("todo Read book", ui);
+    @Test
+    void addTodo_emptyDescription_exceptionThrown() {
+        assertThrows(BaymaxException.class, () -> taskList.addTodo("todo "));
+    }
 
-        assertEquals(initialSize + 1, taskList.getTasks().size(), "Task list size should increase by 1.");
+    @Test
+    void deleteTask_validIndex_taskDeleted() throws BaymaxException {
+        taskList.addTodo("todo Read book");
+        assertEquals(1, taskList.getTasks().size());
 
-        Task lastTask = taskList.getTasks().get(taskList.getTasks().size() - 1);
-        assertTrue(lastTask instanceof Todo, "Last task should be a Todo task.");
+        String response = taskList.deleteTask(0);
+        assertEquals(0, taskList.getTasks().size());
+        assertTrue(response.contains("Removed task"));
+    }
+
+    @Test
+    void deleteTask_invalidIndex_exceptionThrown() {
+        assertThrows(BaymaxException.class, () -> taskList.deleteTask(0));
+    }
+
+    @Test
+    void markTask_validIndex_taskMarkedAsDone() throws BaymaxException {
+        taskList.addTodo("todo Read book");
+        assertFalse(taskList.getTasks().get(0).isDone());
+
+        String response = taskList.markTask(0, true);
+        assertTrue(taskList.getTasks().get(0).isDone());
+        assertTrue(response.contains("Marked task as done"));
+    }
+
+    @Test
+    void markTask_invalidIndex_exceptionThrown() {
+        assertThrows(BaymaxException.class, () -> taskList.markTask(0, true));
     }
 }
-*/

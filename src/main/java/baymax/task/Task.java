@@ -101,6 +101,10 @@ public abstract class Task {
      */
     public abstract String toFileFormat();
 
+    public boolean isDone() {
+        return isDone;
+    }
+
     /**
      * Returns a string representation of the task, including its status and description.
      *
