@@ -34,24 +34,24 @@ public class Parser {
         String command = words[0];
 
         switch (command) {
-            case "bye":
-                return "Byeee! Take care human!";
-            case "list":
-                return taskList.listTasks();
-            case "mark":
-                return taskList.markTask(parseIndex(words), true);
-            case "unmark":
-                return taskList.markTask(parseIndex(words), false);
-            case "delete":
-                return taskList.deleteTask(parseIndex(words));
-            case "todo":
-                return taskList.addTodo(input);
-            case "deadline":
-                return taskList.addDeadline(input);
-            case "event":
-                return taskList.addEvent(input);
-            default:
-                throw new BaymaxException("Invalid command!");
+        case "bye":
+            return "Byeee! Take care human!";
+        case "list":
+            return taskList.listTasks();
+        case "mark":
+            return taskList.markTask(parseIndex(words), true);
+        case "unmark":
+            return taskList.markTask(parseIndex(words), false);
+        case "delete":
+            return taskList.deleteTask(parseIndex(words));
+        case "todo":
+            return taskList.addTodo(input);
+        case "deadline":
+            return taskList.addDeadline(input);
+        case "event":
+            return taskList.addEvent(input);
+        default:
+            throw new BaymaxException("Invalid command!");
         }
     }
 

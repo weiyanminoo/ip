@@ -62,19 +62,19 @@ public class Storage {
                 String description = parts[2];
 
                 switch (type) {
-                    case "T":
-                        tasks.add(new Todo(description, isDone));
-                        break;
-                    case "D":
-                        if (parts.length < 4) throw new IllegalArgumentException("Invalid Deadline format: " + line);
-                        tasks.add(new Deadline(description, parts[3], isDone));
-                        break;
-                    case "E":
-                        if (parts.length < 6) throw new IllegalArgumentException("Invalid Event format: " + line);
-                        tasks.add(new Event(description, parts[3], parts[4], parts[5], isDone));
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unknown task type: " + type);
+                case "T":
+                    tasks.add(new Todo(description, isDone));
+                    break;
+                case "D":
+                    if (parts.length < 4) throw new IllegalArgumentException("Invalid Deadline format: " + line);
+                    tasks.add(new Deadline(description, parts[3], isDone));
+                    break;
+                case "E":
+                    if (parts.length < 6) throw new IllegalArgumentException("Invalid Event format: " + line);
+                    tasks.add(new Event(description, parts[3], parts[4], parts[5], isDone));
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown task type: " + type);
                 }
             } catch (IllegalArgumentException e) {
                 System.out.println("Skipped corrupted line: " + e.getMessage());
