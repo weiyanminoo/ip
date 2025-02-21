@@ -6,7 +6,6 @@ import baymax.task.Deadline;
 import baymax.task.Task;
 import baymax.task.Todo;
 import baymax.storage.Storage;
-import baymax.ui.UI;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -15,6 +14,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Manages a list of tasks and provides methods to modify and retrieve tasks.
@@ -22,6 +22,10 @@ import java.util.ArrayList;
 public class TaskList {
 
     private ArrayList<Task> tasks;
+    // A stack to store previous states
+    private Stack<ArrayList<Task>> history;
+    // A stack to store the state of tasks modified by markTask()
+    private Stack<TaskState> taskStateHistory = new Stack<>();
     private Storage storage;
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HHmm");
@@ -34,6 +38,8 @@ public class TaskList {
     public TaskList(Storage storage) {
         this.storage = storage;
         this.tasks = new ArrayList<>(loadTasksFromStorage());
+        this.history = new Stack<>();
+        this.taskStateHistory = new Stack<>();
     }
 
     /**
@@ -41,6 +47,8 @@ public class TaskList {
      */
     public TaskList() {
         this.tasks = new ArrayList<>();
+        this.history = new Stack<>();
+        this.taskStateHistory = new Stack<>();
     }
 
     /**
@@ -70,6 +78,7 @@ public class TaskList {
             if (description.isEmpty()) {
                 throw new BaymaxException("The description of a todo cannot be empty!");
             }
+            saveState();
             Task todo = new Todo(description);
             tasks.add(todo);
             assert tasks.contains(todo) : "Task was not added successfully";
@@ -94,7 +103,7 @@ public class TaskList {
             if (parts.length < 2 || parts[0].isEmpty() || parts[1].isEmpty()) {
                 throw new BaymaxException("Invalid deadline format. Use: deadline [description] /by [yyyy-MM-dd HHmm]");
             }
-
+            saveState();
             LocalDateTime deadline = LocalDateTime.parse(parts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
             Task deadlineTask = new Deadline(parts[0], parts[1]);
             tasks.add(deadlineTask);
@@ -120,15 +129,13 @@ public class TaskList {
             if (parts.length < 4) {
                 throw new BaymaxException("Invalid event format. Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
             }
-
             LocalDate date = LocalDate.parse(parts[1], DATE_FORMAT);
             LocalTime fromTime = LocalTime.parse(parts[2], TIME_FORMAT);
             LocalTime toTime = LocalTime.parse(parts[3], TIME_FORMAT);
-
             if (fromTime.isAfter(toTime)) {
                 throw new BaymaxException("Invalid time range! Start time must be before end time.");
             }
-
+            saveState();
             Task event = new Event(parts[0], date.toString(), fromTime.toString(), toTime.toString());
             tasks.add(event);
             assert tasks.contains(event) : "Task was not added successfully";
@@ -147,6 +154,7 @@ public class TaskList {
      */
     public String deleteTask(int index) throws BaymaxException {
         assert index >= 0 && index < tasks.size() : "Index out of bounds";
+        saveState();
         Task removedTask = tasks.remove(index);
         saveTasks();
         return "Removed task:\n  " + removedTask + "\nNow you have " + tasks.size() + " tasks in the list.";
@@ -162,15 +170,16 @@ public class TaskList {
     public String markTask(int index, boolean isDone) throws BaymaxException {
         assert index >= 0 && index < tasks.size() : "Index out of bounds";
         Task task = tasks.get(index);
+        // Save the current state before changing it
+        taskStateHistory.push(new TaskState(index, task.isDone()));
         if (isDone) {
             task.markAsDone();
-            saveTasks();
-            return "Marked task as done:\n  " + task;
         } else {
             task.markAsNotDone();
-            saveTasks();
-            return "Marked task as not done:\n  " + task;
         }
+        saveTasks();
+        return isDone ? "Marked task as done:\n  " + task
+                : "Marked task as not done:\n  " + task;
     }
 
     /**
@@ -252,5 +261,37 @@ public class TaskList {
             response.append((i + 1)).append(". ").append(matchingTasks.get(i)).append("\n");
         }
         return response.toString();
+    }
+
+    /**
+     * Saves the current state before making any modifications.
+     */
+    private void saveState() {
+        history.push(new ArrayList<>(tasks)); // Save a copy of the current task list
+    }
+
+    /**
+     * Undoes the last modification made to the task list.
+     *
+     * This method restores the previous state of the most recent change.
+     * It prioritizes restoring the task completion status (for mark/unmark actions).
+     * If no task completion change is available, it reverts the most recent list modification
+     * (such as adding or deleting a task).
+     *
+     * @return A message indicating whether the undo operation was successful.
+     */
+    public String undo() {
+        if (!taskStateHistory.isEmpty()) {
+            TaskState lastState = taskStateHistory.pop();
+            Task task = tasks.get(lastState.getIndex());
+            task.setDone(lastState.getPreviousState()); // Restore task state
+            saveTasks();
+            return "Undo successful! Task status reverted:\n  " + task;
+        }
+        if (!history.isEmpty()) {
+            tasks = history.pop();
+            return "Undo successful! The last command has been reverted.";
+        }
+        return "There is nothing to undo!";
     }
 }
