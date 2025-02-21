@@ -64,6 +64,7 @@ public class TaskList {
      * @throws BaymaxException If the input is invalid.
      */
     public String addTodo(String input) throws BaymaxException {
+        assert input != null : "Input cannot be null";
         try {
             String description = input.substring(5).trim();
             if (description.isEmpty()) {
@@ -71,6 +72,7 @@ public class TaskList {
             }
             Task todo = new Todo(description);
             tasks.add(todo);
+            assert tasks.contains(todo) : "Task was not added successfully";
             saveTasks();
             return "Added task:\n  " + todo + "\nNow you have " + tasks.size() + " tasks in the list.";
         } catch (StringIndexOutOfBoundsException e) {
@@ -85,6 +87,7 @@ public class TaskList {
      * @throws BaymaxException If the input format is invalid.
      */
     public String addDeadline(String input) throws BaymaxException {
+        assert input != null : "Input cannot be null";
         try {
             String description = input.substring(9).trim();
             String[] parts = description.split(" /by ");
@@ -95,6 +98,7 @@ public class TaskList {
             LocalDateTime deadline = LocalDateTime.parse(parts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
             Task deadlineTask = new Deadline(parts[0], parts[1]);
             tasks.add(deadlineTask);
+            assert tasks.contains(deadlineTask) : "Task was not added successfully";
             saveTasks();
             return "Added task:\n  " + deadlineTask + "\nNow you have " + tasks.size() + " tasks in the list.";
         } catch (DateTimeParseException e) {
@@ -109,6 +113,7 @@ public class TaskList {
      * @throws BaymaxException If the input format is invalid.
      */
     public String addEvent(String input) throws BaymaxException {
+        assert input != null : "Input cannot be null";
         try {
             String description = input.substring(6).trim();
             String[] parts = description.split(" /on | /from | /to ");
@@ -126,6 +131,7 @@ public class TaskList {
 
             Task event = new Event(parts[0], date.toString(), fromTime.toString(), toTime.toString());
             tasks.add(event);
+            assert tasks.contains(event) : "Task was not added successfully";
             saveTasks();
             return "Added task:\n  " + event + "\nNow you have " + tasks.size() + " tasks in the list.";
         } catch (DateTimeParseException e) {
@@ -140,9 +146,7 @@ public class TaskList {
      * @throws BaymaxException If the index is out of range.
      */
     public String deleteTask(int index) throws BaymaxException {
-        if (index < 0 || index >= tasks.size()) {
-            throw new BaymaxException("Task number out of range!");
-        }
+        assert index >= 0 && index < tasks.size() : "Index out of bounds";
         Task removedTask = tasks.remove(index);
         saveTasks();
         return "Removed task:\n  " + removedTask + "\nNow you have " + tasks.size() + " tasks in the list.";
@@ -156,9 +160,7 @@ public class TaskList {
      * @throws BaymaxException If the index is out of range.
      */
     public String markTask(int index, boolean isDone) throws BaymaxException {
-        if (index < 0 || index >= tasks.size()) {
-            throw new BaymaxException("Task number out of range!");
-        }
+        assert index >= 0 && index < tasks.size() : "Index out of bounds";
         Task task = tasks.get(index);
         if (isDone) {
             task.markAsDone();
