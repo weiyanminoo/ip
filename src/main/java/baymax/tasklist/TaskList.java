@@ -229,12 +229,12 @@ public class TaskList {
     }
 
     /**
-     * Finds tasks that contain the specified keyword in their description.
+     * Finds and returns tasks that contain the given keyword in their description.
      *
-     * @param keyword The search keyword to match against task descriptions.
-     * @param ui      The UI component responsible for displaying the results.
+     * @param keyword The keyword to search for.
+     * @return A string representation of the matching tasks.
      */
-    public void findTasks(String keyword, UI ui) {
+    public String findTask(String keyword) {
         ArrayList<Task> matchingTasks = new ArrayList<>();
 
         for (Task task : tasks) {
@@ -243,6 +243,14 @@ public class TaskList {
             }
         }
 
-        ui.matchingTaskMessage(matchingTasks);
+        if (matchingTasks.isEmpty()) {
+            return "No matching tasks found!";
+        }
+
+        StringBuilder response = new StringBuilder("Here are the matching tasks:\n");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            response.append((i + 1)).append(". ").append(matchingTasks.get(i)).append("\n");
+        }
+        return response.toString();
     }
 }
