@@ -4,7 +4,6 @@ import baymax.exception.BaymaxException;
 import baymax.parser.Parser;
 import baymax.storage.Storage;
 import baymax.tasklist.TaskList;
-import baymax.ui.UI;
 
 /**
  * The main entry point for the Baymax application.
@@ -12,7 +11,6 @@ import baymax.ui.UI;
  */
 public class Baymax {
 
-    private UI ui;
     private Storage storage;
     private TaskList taskList;
     private Parser parser;
@@ -23,10 +21,9 @@ public class Baymax {
      * @param filepath The file path to load and save tasks.
      */
     public Baymax(String filepath) {
-        this.ui = new UI();
         this.storage = new Storage(filepath);
         this.taskList = new TaskList(storage);
-        this.parser = new Parser(taskList, ui);
+        this.parser = new Parser(taskList);
     }
 
     /**
@@ -42,5 +39,4 @@ public class Baymax {
             return "Error: " + e.getMessage();
         }
     }
-
 }

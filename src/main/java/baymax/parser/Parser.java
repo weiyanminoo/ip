@@ -2,7 +2,6 @@ package baymax.parser;
 
 import baymax.exception.BaymaxException;
 import baymax.tasklist.TaskList;
-import baymax.ui.UI;
 
 /**
  * Parses user input and executes corresponding commands.
@@ -10,17 +9,14 @@ import baymax.ui.UI;
 public class Parser {
 
     private TaskList taskList;
-    private UI ui;
 
     /**
      * Constructs a Parser instance.
      *
      * @param taskList The task list to manipulate based on user commands.
-     * @param ui The UI instance to interact with the user.
      */
-    public Parser(TaskList taskList, UI ui) {
+    public Parser(TaskList taskList) {
         this.taskList = taskList;
-        this.ui = ui;
     }
 
     /**
