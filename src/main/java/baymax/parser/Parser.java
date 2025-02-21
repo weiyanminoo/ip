@@ -58,6 +58,8 @@ public class Parser {
                 throw new BaymaxException("Please provide a keyword to search.");
             }
             return taskList.findTask(words[1]);
+        case "undo":
+            return taskList.undo();
         default:
             throw new BaymaxException("Invalid command!");
         }

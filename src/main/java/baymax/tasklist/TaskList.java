@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * Manages a list of tasks and provides methods to modify and retrieve tasks.
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 public class TaskList {
 
     private ArrayList<Task> tasks;
+    // A stack to store previous states
+    private Stack<ArrayList<Task>> history;
     private Storage storage;
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HHmm");
@@ -34,6 +37,7 @@ public class TaskList {
     public TaskList(Storage storage) {
         this.storage = storage;
         this.tasks = new ArrayList<>(loadTasksFromStorage());
+        this.history = new Stack<>();
     }
 
     /**
@@ -41,6 +45,7 @@ public class TaskList {
      */
     public TaskList() {
         this.tasks = new ArrayList<>();
+        this.history = new Stack<>();
     }
 
     /**
@@ -70,6 +75,7 @@ public class TaskList {
             if (description.isEmpty()) {
                 throw new BaymaxException("The description of a todo cannot be empty!");
             }
+            saveState();
             Task todo = new Todo(description);
             tasks.add(todo);
             assert tasks.contains(todo) : "Task was not added successfully";
@@ -94,7 +100,7 @@ public class TaskList {
             if (parts.length < 2 || parts[0].isEmpty() || parts[1].isEmpty()) {
                 throw new BaymaxException("Invalid deadline format. Use: deadline [description] /by [yyyy-MM-dd HHmm]");
             }
-
+            saveState();
             LocalDateTime deadline = LocalDateTime.parse(parts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
             Task deadlineTask = new Deadline(parts[0], parts[1]);
             tasks.add(deadlineTask);
@@ -120,15 +126,13 @@ public class TaskList {
             if (parts.length < 4) {
                 throw new BaymaxException("Invalid event format. Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
             }
-
             LocalDate date = LocalDate.parse(parts[1], DATE_FORMAT);
             LocalTime fromTime = LocalTime.parse(parts[2], TIME_FORMAT);
             LocalTime toTime = LocalTime.parse(parts[3], TIME_FORMAT);
-
             if (fromTime.isAfter(toTime)) {
                 throw new BaymaxException("Invalid time range! Start time must be before end time.");
             }
-
+            saveState();
             Task event = new Event(parts[0], date.toString(), fromTime.toString(), toTime.toString());
             tasks.add(event);
             assert tasks.contains(event) : "Task was not added successfully";
@@ -147,6 +151,7 @@ public class TaskList {
      */
     public String deleteTask(int index) throws BaymaxException {
         assert index >= 0 && index < tasks.size() : "Index out of bounds";
+        saveState();
         Task removedTask = tasks.remove(index);
         saveTasks();
         return "Removed task:\n  " + removedTask + "\nNow you have " + tasks.size() + " tasks in the list.";
@@ -252,5 +257,24 @@ public class TaskList {
             response.append((i + 1)).append(". ").append(matchingTasks.get(i)).append("\n");
         }
         return response.toString();
+    }
+
+    /**
+     * Saves the current state before making any modifications.
+     */
+    private void saveState() {
+        history.push(new ArrayList<>(tasks)); // Save a copy of the current task list
+    }
+
+    /**
+     * Undoes the last modification by restoring the previous state.
+     * @return Message indicating whether undo was successful or not.
+     */
+    public String undo() {
+        if (history.isEmpty()) {
+            return "There is nothing to undo!";
+        }
+        tasks = history.pop(); // Restore the last saved state
+        return "Undo successful! The last command has been reverted.";
     }
 }
