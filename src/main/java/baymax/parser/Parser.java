@@ -30,6 +30,9 @@ public class Parser {
      * @throws BaymaxException If the command is invalid.
      */
     public String processCommand(String input) throws BaymaxException {
+        assert input != null : "Input command should not be null";
+        assert !input.trim().isEmpty() : "Input command should not be empty";
+
         String[] words = input.split(" ", 2);
         String command = words[0];
 
@@ -63,6 +66,8 @@ public class Parser {
      * @throws BaymaxException If the index is missing or invalid.
      */
     private int parseIndex(String[] words) throws BaymaxException {
+        assert words != null : "Words array should not be null";
+
         if (words.length < 2) {
             throw new BaymaxException("Invalid input! Command requires an index.");
         }
