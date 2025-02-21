@@ -70,28 +70,28 @@ public abstract class Task {
         String description = parts[2];
 
         switch (type) {
-            case "T":
-                Todo todo = new Todo(description);
-                if (isDone) {
-                    todo.markAsDone();
-                }
-                return todo;
-            case "D":
-                assert parts.length >= 4 : "Invalid Deadline format";
-                Deadline deadline = new Deadline(description, parts[3]);
-                if (isDone) {
-                    deadline.markAsDone();
-                }
-                return deadline;
-            case "E":
-                assert parts.length >= 5 : "Invalid Event format";
-                Event event = new Event(description, parts[3], parts[4], parts[5]);
-                if (isDone) {
-                    event.markAsDone();
-                }
-                return event;
-            default:
-                throw new BaymaxException("Unknown task type: " + type);
+        case "T":
+            Todo todo = new Todo(description);
+            if (isDone) {
+                todo.markAsDone();
+            }
+            return todo;
+        case "D":
+            assert parts.length >= 4 : "Invalid Deadline format";
+            Deadline deadline = new Deadline(description, parts[3]);
+            if (isDone) {
+                deadline.markAsDone();
+            }
+            return deadline;
+        case "E":
+            assert parts.length >= 5 : "Invalid Event format";
+            Event event = new Event(description, parts[3], parts[4], parts[5]);
+            if (isDone) {
+                event.markAsDone();
+            }
+            return event;
+        default:
+            throw new BaymaxException("Unknown task type: " + type);
         }
     }
 
