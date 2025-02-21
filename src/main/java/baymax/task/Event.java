@@ -26,9 +26,14 @@ public class Event extends Task{
      */
     public Event(String description, String date, String from, String to) {
         super(description, TaskType.EVENT);
+        assert date != null && !date.trim().isEmpty() : "Event date cannot be null or empty";
+        assert from != null && !from.trim().isEmpty() : "Event start time cannot be null or empty";
+        assert to != null && !to.trim().isEmpty() : "Event end time cannot be null or empty";
+
         this.date = LocalDate.parse(date);
         this.from = LocalTime.parse(from);
         this.to = LocalTime.parse(to);
+        assert this.to.isAfter(this.from) : "Event end time must be after start time";
     }
 
     /**

@@ -19,6 +19,8 @@ public abstract class Task {
      * @param type        The type of task (e.g., TODO, DEADLINE, EVENT).
      */
     public Task(String description, TaskType type) {
+        assert description != null && !description.trim().isEmpty() : "Task description cannot be null or empty";
+        assert type != null : "Task type cannot be null";
         this.description = description;
         this.isDone = false;
         this.type = type;
@@ -59,10 +61,9 @@ public abstract class Task {
      * @throws BaymaxException If the data format is invalid or corrupted.
      */
     public static Task fromFileFormat(String line) throws BaymaxException {
+        assert line != null && !line.trim().isEmpty() : "Input line cannot be null or empty";
         String[] parts = line.split(" \\| ");
-        if (parts.length < 3) {
-            throw new BaymaxException("Corrupted data file: " + line);
-        }
+        assert parts.length >= 3 : "Invalid file format, must have at least 3 parts";
 
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
@@ -76,14 +77,14 @@ public abstract class Task {
                 }
                 return todo;
             case "D":
-                if (parts.length < 4) throw new BaymaxException("Corrupted deadline data: " + line);
+                assert parts.length >= 4 : "Invalid Deadline format";
                 Deadline deadline = new Deadline(description, parts[3]);
                 if (isDone) {
                     deadline.markAsDone();
                 }
                 return deadline;
             case "E":
-                if (parts.length < 5) throw new BaymaxException("Corrupted event data: " + line);
+                assert parts.length >= 5 : "Invalid Event format";
                 Event event = new Event(description, parts[3], parts[4], parts[5]);
                 if (isDone) {
                     event.markAsDone();
