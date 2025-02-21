@@ -106,6 +106,10 @@ public abstract class Task {
         return isDone;
     }
 
+    public void setDone(boolean isDone) {
+        this.isDone = isDone;
+    }
+
     /**
      * Returns a string representation of the task, including its status and description.
      *

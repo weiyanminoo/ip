@@ -6,7 +6,6 @@ import baymax.task.Deadline;
 import baymax.task.Task;
 import baymax.task.Todo;
 import baymax.storage.Storage;
-import baymax.ui.UI;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -25,6 +24,8 @@ public class TaskList {
     private ArrayList<Task> tasks;
     // A stack to store previous states
     private Stack<ArrayList<Task>> history;
+    // A stack to store the state of tasks modified by markTask()
+    private Stack<TaskState> taskStateHistory = new Stack<>();
     private Storage storage;
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HHmm");
@@ -38,6 +39,7 @@ public class TaskList {
         this.storage = storage;
         this.tasks = new ArrayList<>(loadTasksFromStorage());
         this.history = new Stack<>();
+        this.taskStateHistory = new Stack<>();
     }
 
     /**
@@ -46,6 +48,7 @@ public class TaskList {
     public TaskList() {
         this.tasks = new ArrayList<>();
         this.history = new Stack<>();
+        this.taskStateHistory = new Stack<>();
     }
 
     /**
@@ -167,15 +170,16 @@ public class TaskList {
     public String markTask(int index, boolean isDone) throws BaymaxException {
         assert index >= 0 && index < tasks.size() : "Index out of bounds";
         Task task = tasks.get(index);
+        // Save the current state before changing it
+        taskStateHistory.push(new TaskState(index, task.isDone()));
         if (isDone) {
             task.markAsDone();
-            saveTasks();
-            return "Marked task as done:\n  " + task;
         } else {
             task.markAsNotDone();
-            saveTasks();
-            return "Marked task as not done:\n  " + task;
         }
+        saveTasks();
+        return isDone ? "Marked task as done:\n  " + task
+                : "Marked task as not done:\n  " + task;
     }
 
     /**
@@ -267,14 +271,27 @@ public class TaskList {
     }
 
     /**
-     * Undoes the last modification by restoring the previous state.
-     * @return Message indicating whether undo was successful or not.
+     * Undoes the last modification made to the task list.
+     *
+     * This method restores the previous state of the most recent change.
+     * It prioritizes restoring the task completion status (for mark/unmark actions).
+     * If no task completion change is available, it reverts the most recent list modification
+     * (such as adding or deleting a task).
+     *
+     * @return A message indicating whether the undo operation was successful.
      */
     public String undo() {
-        if (history.isEmpty()) {
-            return "There is nothing to undo!";
+        if (!taskStateHistory.isEmpty()) {
+            TaskState lastState = taskStateHistory.pop();
+            Task task = tasks.get(lastState.getIndex());
+            task.setDone(lastState.getPreviousState()); // Restore task state
+            saveTasks();
+            return "Undo successful! Task status reverted:\n  " + task;
         }
-        tasks = history.pop(); // Restore the last saved state
-        return "Undo successful! The last command has been reverted.";
+        if (!history.isEmpty()) {
+            tasks = history.pop();
+            return "Undo successful! The last command has been reverted.";
+        }
+        return "There is nothing to undo!";
     }
 }
