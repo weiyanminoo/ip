@@ -1,6 +1,6 @@
-# Baymax
+# BAYMAX
 
-![Screenshot 2025-02-22 161642.png](..%2F..%2F..%2FPictures%2FScreenshots%2FScreenshot%202025-02-22%20161642.png)
+![Baymax Screenshot](Ui.png)
 
 > If knowledge is power, learning is your superpower - [Jim Kwik](https://iamfearlesssoul.com/jim-kwik-quotes/)
 
@@ -12,64 +12,90 @@ Baymax frees your mind of having to remember things to do, giving you more time 
 
 ## Adding tasks
 
-// Describe the action and its outcome.
+You can add 3 types of tasks - todo, deadline, event
 
-// Give examples of usage
+1) Add Todo task
 
-Example: `keyword (optional arguments)`
-
-// A description of the expected outcome goes here
+Use this format: todo [description]
+Example: `todo read book`
 
 ```
-expected output
+I have added this task:
+    [T][] read book
+```
+
+2) Add Deadline task
+
+Use this format: deadline [description] /by [yyyy-mm-dd HHmm] 
+Example: `deadline homework /by 2025-02-23 2359`
+
+```
+I have added this task:
+    [D][] homework (by: Feb 23, 2025, 11:59pm)
+```
+
+3) Add Event task
+
+Use this format: event [description] /on [yyyy-mm-dd] /from [HHmm] /to [HHmm]
+Example: `event party /on 2025-02-28 /from 2100 /to 2330`
+
+```
+I have added this task:
+    [E][] party (on: Feb 28, 2025 from: 9:00pm to: 11:30pm)
 ```
 
 ## Marking tasks
 
 You can mark your tasks as done or not done!
+(provide the index of your task on the list)
 
-Example: 'mark 1'
-
-```
-output
-```
-
-## Deleting tasks
-
-You can delete tasks that you do not want to see on your list!
-
-Example: 'mark 1'
+Example: `mark 1` (use 'unmark 1' to unmark)
 
 ```
-output
+Good job on completing this task:
+    [T][X] read book
 ```
 
 ## Viewing a list of your tasks
 
 You can view a list of all of your tasks!
 
-Example: 'list'
+Example: `list`
 
 ```
-output
+Here are all your tasks:
+1. [T][X] read book 
 ```
 
 ## Finding tasks
 
 You can search for your tasks using a keyword!
 
-Example: 'find book'
+Example: `find book`
 
 ```
-output
+Here are all the matching tasks:
+1. [T][X] read book 
+```
+
+## Deleting tasks
+
+You can delete tasks that you do not want to see on your list!
+
+Example: `delete 1`
+(provide the index of your task on the list)
+
+```
+I have removed the task:
+    [T][X] read book
 ```
 
 ## Undoing tasks
 
 You can undo your latest command!
 
-Example: 'undo'
+Example: `undo`
 
 ```
-output
+Undo succesful! Your last command has been reverted.
 ```
