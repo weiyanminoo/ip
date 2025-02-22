@@ -1,12 +1,12 @@
 package baymax.gui;
 
-import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import baymax.Baymax;
+import java.io.IOException;
 
 /**
  * The main entry point for the JavaFX GUI application.
@@ -22,7 +22,7 @@ public class Main extends Application {
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
             stage.setScene(scene);
-            fxmlLoader.<MainWindow>getController().setBaymax(baymax);  // Inject Baymax instance
+            fxmlLoader.<MainWindow>getController().setBaymax(baymax);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

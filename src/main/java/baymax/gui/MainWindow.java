@@ -43,11 +43,18 @@ public class MainWindow extends VBox {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = baymax.getResponse(input); // Use updated Baymax method
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getDukeDialog(response, baymaxImage)
-        );
+        String response = baymax.getResponse(input); // Get response from Baymax
+
+        DialogBox userDialog = DialogBox.getUserDialog(input, userImage);
+
+        if (response.startsWith("Error:")) { // Show error messages differently
+            DialogBox errorDialog = DialogBox.getErrorDialog(response, baymaxImage);
+            dialogContainer.getChildren().addAll(userDialog, errorDialog);
+        } else {
+            DialogBox baymaxDialog = DialogBox.getBaymaxDialog(response, baymaxImage);
+            dialogContainer.getChildren().addAll(userDialog, baymaxDialog);
+        }
+
         userInput.clear();
     }
 
@@ -55,6 +62,6 @@ public class MainWindow extends VBox {
      * Displays a message in the GUI.
      */
     public void displayMessage(String message) {
-        dialogContainer.getChildren().add(DialogBox.getDukeDialog(message, baymaxImage));
+        dialogContainer.getChildren().add(DialogBox.getBaymaxDialog(message, baymaxImage));
     }
 }

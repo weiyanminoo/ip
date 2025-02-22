@@ -3,3 +3,4 @@ D | 0 | homework | 2025-03-20 1400
 E | 0 | date | 2025-02-22 | 18:00 | 22:00
 T | 0 | watch lecture
 D | 0 | ip project | 2025-02-24 2359
+T | 0 | eat dinner
