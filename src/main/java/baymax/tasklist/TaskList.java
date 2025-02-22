@@ -323,6 +323,7 @@ public class TaskList {
         }
         if (!history.isEmpty()) {
             tasks = history.pop();
+            saveTasks();
             return "Undo successful! Your last command has been reverted.";
         }
         return "There is nothing to undo!";

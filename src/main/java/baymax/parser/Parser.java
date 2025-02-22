@@ -34,6 +34,7 @@ public class Parser {
 
         switch (command) {
         case "bye":
+            scheduleExit();
             return "Byeee! Take care :D";
         case "list":
             return taskList.listTasks();
@@ -79,5 +80,19 @@ public class Parser {
         } catch (NumberFormatException e) {
             throw new BaymaxException("That task number doesn't exist!");
         }
+    }
+
+    /**
+     * Schedules the application to exit after 1 second.
+     */
+    private void scheduleExit() {
+        new Thread(() -> {
+            try {
+                Thread.sleep(1500); // Wait for 1 second before exiting
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            System.exit(0); // Exit the application
+        }).start();
     }
 }
