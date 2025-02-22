@@ -73,6 +73,11 @@ public class TaskList {
      */
     public String addTodo(String input) throws BaymaxException {
         assert input != null : "Input cannot be null";
+
+        if (input.trim().equals("todo")) {  // Check if only "todo" is provided
+            throw new BaymaxException("The description of a todo cannot be empty!");
+        }
+
         try {
             String description = input.substring(5).trim();
             if (description.isEmpty()) {
@@ -97,12 +102,22 @@ public class TaskList {
      */
     public String addDeadline(String input) throws BaymaxException {
         assert input != null : "Input cannot be null";
+
+        if (input.trim().equals("deadline")) {  // Check if only "deadline" is provided
+            throw new BaymaxException("The description and deadline of a deadline task cannot be empty!");
+        }
+
         try {
             String description = input.substring(9).trim();
-            String[] parts = description.split(" /by ");
-            if (parts.length < 2 || parts[0].isEmpty() || parts[1].isEmpty()) {
+            if (description.isEmpty()) {
+                throw new BaymaxException("The description of a deadline cannot be empty!");
+            }
+
+            String[] parts = description.split(" /by ", 2);
+            if (parts.length < 2 || parts[1].trim().isEmpty()) {
                 throw new BaymaxException("Invalid deadline format. Use: deadline [description] /by [yyyy-MM-dd HHmm]");
             }
+
             saveState();
             LocalDateTime deadline = LocalDateTime.parse(parts[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
             Task deadlineTask = new Deadline(parts[0], parts[1]);
@@ -112,6 +127,8 @@ public class TaskList {
             return "Added task:\n  " + deadlineTask + "\nNow you have " + tasks.size() + " tasks in the list.";
         } catch (DateTimeParseException e) {
             throw new BaymaxException("Invalid format! Use: deadline [description] /by [yyyy-MM-dd HHmm]");
+        } catch (StringIndexOutOfBoundsException e) {
+            throw new BaymaxException("Invalid input! Use: deadline [description] /by [date]");
         }
     }
 
@@ -123,19 +140,31 @@ public class TaskList {
      */
     public String addEvent(String input) throws BaymaxException {
         assert input != null : "Input cannot be null";
+
+        if (input.trim().equals("event")) {  // Check if only "event" is provided
+            throw new BaymaxException("The description, date, and time range of an event cannot be empty!");
+        }
+
         try {
             String description = input.substring(6).trim();
-            String[] parts = description.split(" /on | /from | /to ");
-            if (parts.length < 4) {
+            if (description.isEmpty()) {
+                throw new BaymaxException("The description of an event cannot be empty!");
+            }
+
+            String[] parts = description.split(" /on | /from | /to ", 4);
+            if (parts.length < 4 || parts[1].trim().isEmpty() || parts[2].trim().isEmpty() || parts[3].trim().isEmpty()) {
                 throw new BaymaxException("Invalid event format. Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
             }
+
+            saveState();
             LocalDate date = LocalDate.parse(parts[1], DATE_FORMAT);
             LocalTime fromTime = LocalTime.parse(parts[2], TIME_FORMAT);
             LocalTime toTime = LocalTime.parse(parts[3], TIME_FORMAT);
+
             if (fromTime.isAfter(toTime)) {
                 throw new BaymaxException("Invalid time range! Start time must be before end time.");
             }
-            saveState();
+
             Task event = new Event(parts[0], date.toString(), fromTime.toString(), toTime.toString());
             tasks.add(event);
             assert tasks.contains(event) : "Task was not added successfully";
@@ -143,6 +172,8 @@ public class TaskList {
             return "Added task:\n  " + event + "\nNow you have " + tasks.size() + " tasks in the list.";
         } catch (DateTimeParseException e) {
             throw new BaymaxException("Invalid date/time format! Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
+        } catch (StringIndexOutOfBoundsException e) {
+            throw new BaymaxException("Invalid input! Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
         }
     }
 
