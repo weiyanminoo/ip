@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
  * An Event task has a description, a specific date, and a time range.
  */
 public class Event extends Task{
-    // Dates for the duration
+
     private LocalDate date;
     private LocalTime from;
     private LocalTime to;
@@ -52,20 +52,6 @@ public class Event extends Task{
         this.from = LocalTime.parse(from);
         this.to = LocalTime.parse(to);
         this.isDone = isDone;
-    }
-
-    /**
-     * Creates an Event task from a file format representation.
-     *
-     * @param description The description of the event.
-     * @param day The date of the event in "yyyy-MM-dd" format.
-     * @param from The start time in "HHmm" format.
-     * @param to The end time in "HHmm" format.
-     * @param isDone Whether the event is marked as done.
-     * @return A new Event task instance.
-     */
-    public static Event fromFileFormat(String description, String day, String from, String to, boolean isDone) {
-        return new Event(description, day, from, to, isDone);
     }
 
     /**

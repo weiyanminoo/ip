@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
  * A Deadline task has a description and a specific due date and time.
  */
 public class Deadline extends Task{
-    // Date for the deadline
+
     protected LocalDateTime deadline;
     private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("MMM dd yyyy, hh:mma");
     private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
@@ -38,17 +38,6 @@ public class Deadline extends Task{
         assert deadline != null && !deadline.trim().isEmpty() : "Deadline date cannot be null or empty";
         this.deadline = LocalDateTime.parse(deadline, INPUT_FORMAT);
         this.isDone = isDone;
-    }
-
-    /**
-     * Creates a Deadline task from a file format representation.
-     *
-     * @param description The description of the task.
-     * @param dateTime The due date and time in "yyyy-MM-dd HHmm" format.
-     * @return A new Deadline task instance.
-     */
-    public static Deadline fromFileFormat(String description, String dateTime) {
-        return new Deadline(description, dateTime);
     }
 
     /**

@@ -1,12 +1,8 @@
 package baymax.tasklist;
 
 import baymax.exception.BaymaxException;
-import baymax.task.Todo;
-import baymax.task.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 

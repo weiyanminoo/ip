@@ -23,7 +23,7 @@ public class Todo extends Task {
      * This constructor is used when loading tasks from storage.
      *
      * @param description The description of the Todo task.
-     * @param isDone      Whether the task is marked as done.
+     * @param isDone Whether the task is marked as done.
      */
     public Todo(String description, boolean isDone) {
         super(description, TaskType.TODO);

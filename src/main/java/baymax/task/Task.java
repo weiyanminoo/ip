@@ -16,7 +16,7 @@ public abstract class Task {
      * By default, the task is set to not done.
      *
      * @param description The description of the task.
-     * @param type        The type of task (e.g., TODO, DEADLINE, EVENT).
+     * @param type The type of task (e.g., TODO, DEADLINE, EVENT).
      */
     public Task(String description, TaskType type) {
         assert description != null && !description.trim().isEmpty() : "Task description cannot be null or empty";

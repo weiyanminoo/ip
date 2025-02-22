@@ -3,7 +3,6 @@ package baymax;
 import baymax.storage.Storage;
 import baymax.tasklist.TaskList;
 import baymax.parser.Parser;
-import baymax.ui.UI;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

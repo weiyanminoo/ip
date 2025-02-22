@@ -74,23 +74,23 @@ public class TaskList {
     public String addTodo(String input) throws BaymaxException {
         assert input != null : "Input cannot be null";
 
-        if (input.trim().equals("todo")) {  // Check if only "todo" is provided
-            throw new BaymaxException("The description of a todo cannot be empty!");
+        if (input.trim().equals("todo")) {
+            throw new BaymaxException("Please give me a description of your todo task!");
         }
 
         try {
             String description = input.substring(5).trim();
             if (description.isEmpty()) {
-                throw new BaymaxException("The description of a todo cannot be empty!");
+                throw new BaymaxException("Please give me a description of your todo task!");
             }
             saveState();
             Task todo = new Todo(description);
             tasks.add(todo);
             assert tasks.contains(todo) : "Task was not added successfully";
             saveTasks();
-            return "Added task:\n  " + todo + "\nNow you have " + tasks.size() + " tasks in the list.";
+            return "I have added the task:\n  " + todo + "\nNow you have " + tasks.size() + " tasks in the list.";
         } catch (StringIndexOutOfBoundsException e) {
-            throw new BaymaxException("Invalid input! Use: todo [description]");
+            throw new BaymaxException("Please use this format: todo [description]");
         }
     }
 
@@ -103,19 +103,19 @@ public class TaskList {
     public String addDeadline(String input) throws BaymaxException {
         assert input != null : "Input cannot be null";
 
-        if (input.trim().equals("deadline")) {  // Check if only "deadline" is provided
-            throw new BaymaxException("The description and deadline of a deadline task cannot be empty!");
+        if (input.trim().equals("deadline")) {
+            throw new BaymaxException("Please give me a description of your deadline task!");
         }
 
         try {
             String description = input.substring(9).trim();
             if (description.isEmpty()) {
-                throw new BaymaxException("The description of a deadline cannot be empty!");
+                throw new BaymaxException("Please give me a description of your deadline task!");
             }
 
             String[] parts = description.split(" /by ", 2);
             if (parts.length < 2 || parts[1].trim().isEmpty()) {
-                throw new BaymaxException("Invalid deadline format. Use: deadline [description] /by [yyyy-MM-dd HHmm]");
+                throw new BaymaxException("Please use this format: deadline [description] /by [yyyy-MM-dd HHmm]");
             }
 
             saveState();
@@ -124,11 +124,12 @@ public class TaskList {
             tasks.add(deadlineTask);
             assert tasks.contains(deadlineTask) : "Task was not added successfully";
             saveTasks();
-            return "Added task:\n  " + deadlineTask + "\nNow you have " + tasks.size() + " tasks in the list.";
+            return "I have added the task:\n  " + deadlineTask + "\nNow you have " + tasks.size() + " tasks in the list.";
+
         } catch (DateTimeParseException e) {
-            throw new BaymaxException("Invalid format! Use: deadline [description] /by [yyyy-MM-dd HHmm]");
+            throw new BaymaxException("Please use this format: deadline [description] /by [yyyy-MM-dd HHmm]");
         } catch (StringIndexOutOfBoundsException e) {
-            throw new BaymaxException("Invalid input! Use: deadline [description] /by [date]");
+            throw new BaymaxException("Please use this format: deadline [description] /by [yyyy-MM-dd HHmm]");
         }
     }
 
@@ -142,18 +143,18 @@ public class TaskList {
         assert input != null : "Input cannot be null";
 
         if (input.trim().equals("event")) {  // Check if only "event" is provided
-            throw new BaymaxException("The description, date, and time range of an event cannot be empty!");
+            throw new BaymaxException("Please give me a description of your event task!");
         }
 
         try {
             String description = input.substring(6).trim();
             if (description.isEmpty()) {
-                throw new BaymaxException("The description of an event cannot be empty!");
+                throw new BaymaxException("Please give me a description of your event task!");
             }
 
             String[] parts = description.split(" /on | /from | /to ", 4);
             if (parts.length < 4 || parts[1].trim().isEmpty() || parts[2].trim().isEmpty() || parts[3].trim().isEmpty()) {
-                throw new BaymaxException("Invalid event format. Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
+                throw new BaymaxException("Please use this format: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
             }
 
             saveState();
@@ -162,18 +163,19 @@ public class TaskList {
             LocalTime toTime = LocalTime.parse(parts[3], TIME_FORMAT);
 
             if (fromTime.isAfter(toTime)) {
-                throw new BaymaxException("Invalid time range! Start time must be before end time.");
+                throw new BaymaxException("Hey your start time must be before end time.");
             }
 
             Task event = new Event(parts[0], date.toString(), fromTime.toString(), toTime.toString());
             tasks.add(event);
             assert tasks.contains(event) : "Task was not added successfully";
             saveTasks();
-            return "Added task:\n  " + event + "\nNow you have " + tasks.size() + " tasks in the list.";
+            return "I have added the task:\n  " + event + "\nNow you have " + tasks.size() + " tasks in the list.";
+
         } catch (DateTimeParseException e) {
-            throw new BaymaxException("Invalid date/time format! Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
+            throw new BaymaxException("Please use this format: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
         } catch (StringIndexOutOfBoundsException e) {
-            throw new BaymaxException("Invalid input! Use: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
+            throw new BaymaxException("Please use this format: event [description] /on [yyyy-MM-dd] /from [HHmm] /to [HHmm]");
         }
     }
 
@@ -188,7 +190,7 @@ public class TaskList {
         saveState();
         Task removedTask = tasks.remove(index);
         saveTasks();
-        return "Removed task:\n  " + removedTask + "\nNow you have " + tasks.size() + " tasks in the list.";
+        return "I have removed the task:\n  " + removedTask + "\nNow you have " + tasks.size() + " tasks in the list.";
     }
 
     /**
@@ -209,8 +211,8 @@ public class TaskList {
             task.markAsNotDone();
         }
         saveTasks();
-        return isDone ? "Marked task as done:\n  " + task
-                : "Marked task as not done:\n  " + task;
+        return isDone ? "Good job on completing this task:\n  " + task
+                : "Oh seems like you have not completed this task:\n  " + task;
     }
 
     /**
@@ -220,7 +222,7 @@ public class TaskList {
         if (tasks.isEmpty()) {
             return "You have no tasks in your list!";
         }
-        StringBuilder sb = new StringBuilder("Here are your tasks:\n");
+        StringBuilder sb = new StringBuilder("Here are all your tasks:\n");
         for (int i = 0; i < tasks.size(); i++) {
             sb.append((i + 1)).append(". ").append(tasks.get(i)).append("\n");
         }
@@ -284,10 +286,10 @@ public class TaskList {
         }
 
         if (matchingTasks.isEmpty()) {
-            return "No matching tasks found!";
+            return "There aren't any matching tasks!";
         }
 
-        StringBuilder response = new StringBuilder("Here are the matching tasks:\n");
+        StringBuilder response = new StringBuilder("Here are all the matching tasks:\n");
         for (int i = 0; i < matchingTasks.size(); i++) {
             response.append((i + 1)).append(". ").append(matchingTasks.get(i)).append("\n");
         }
@@ -317,11 +319,11 @@ public class TaskList {
             Task task = tasks.get(lastState.getIndex());
             task.setDone(lastState.getPreviousState()); // Restore task state
             saveTasks();
-            return "Undo successful! Task status reverted:\n  " + task;
+            return "Undo successful! The status of this task is reverted:\n  " + task;
         }
         if (!history.isEmpty()) {
             tasks = history.pop();
-            return "Undo successful! The last command has been reverted.";
+            return "Undo successful! Your last command has been reverted.";
         }
         return "There is nothing to undo!";
     }

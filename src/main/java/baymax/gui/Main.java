@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class Main extends Application {
 
-    private Baymax baymax = new Baymax("./data/tasks.txt");  // Initialize Baymax
+    private Baymax baymax = new Baymax("./data/tasks.txt");
 
     @Override
     public void start(Stage stage) {

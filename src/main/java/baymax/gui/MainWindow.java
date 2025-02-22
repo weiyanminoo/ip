@@ -7,7 +7,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
 import baymax.Baymax;
-import baymax.ui.DialogBox;
 
 /**
  * The main window for the chatbot's GUI.
@@ -30,9 +29,11 @@ public class MainWindow extends VBox {
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        // Show welcome message when GUI loads
+        String welcomeMessage = "Hey there :) I'm Baymax. How can I assist you today?";
+        dialogContainer.getChildren().add(DialogBox.getBaymaxDialog(welcomeMessage, baymaxImage));
     }
 
-    /** Injects the Baymax instance */
     public void setBaymax(Baymax b) {
         this.baymax = b;
     }
@@ -43,8 +44,7 @@ public class MainWindow extends VBox {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = baymax.getResponse(input); // Get response from Baymax
-
+        String response = baymax.getResponse(input);
         DialogBox userDialog = DialogBox.getUserDialog(input, userImage);
 
         if (response.startsWith("Error:")) { // Show error messages differently
@@ -54,14 +54,6 @@ public class MainWindow extends VBox {
             DialogBox baymaxDialog = DialogBox.getBaymaxDialog(response, baymaxImage);
             dialogContainer.getChildren().addAll(userDialog, baymaxDialog);
         }
-
         userInput.clear();
-    }
-
-    /**
-     * Displays a message in the GUI.
-     */
-    public void displayMessage(String message) {
-        dialogContainer.getChildren().add(DialogBox.getBaymaxDialog(message, baymaxImage));
     }
 }

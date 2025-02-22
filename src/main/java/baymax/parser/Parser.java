@@ -34,7 +34,7 @@ public class Parser {
 
         switch (command) {
         case "bye":
-            return "Byeee! Take care human!";
+            return "Byeee! Take care :D";
         case "list":
             return taskList.listTasks();
         case "mark":
@@ -51,13 +51,13 @@ public class Parser {
             return taskList.addEvent(input);
         case "find":
             if (words.length < 2) {
-                throw new BaymaxException("Please provide a keyword to search.");
+                throw new BaymaxException("Please give me a keyword to search.");
             }
             return taskList.findTask(words[1]);
         case "undo":
             return taskList.undo();
         default:
-            throw new BaymaxException("Invalid command!");
+            throw new BaymaxException("I don't understand what you're saying!");
         }
     }
 
@@ -72,12 +72,12 @@ public class Parser {
         assert words != null : "Words array should not be null";
 
         if (words.length < 2) {
-            throw new BaymaxException("Invalid input! Command requires an index.");
+            throw new BaymaxException("Command requires an index.");
         }
         try {
             return Integer.parseInt(words[1]) - 1;
         } catch (NumberFormatException e) {
-            throw new BaymaxException("Invalid task number!");
+            throw new BaymaxException("That task number doesn't exist!");
         }
     }
 }

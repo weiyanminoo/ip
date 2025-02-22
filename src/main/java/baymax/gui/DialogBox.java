@@ -1,4 +1,4 @@
-package baymax.ui;
+package baymax.gui;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,9 +28,9 @@ public class DialogBox extends HBox {
     /**
      * Constructs a DialogBox.
      *
-     * @param text      The message text.
-     * @param img       The image associated with the message.
-     * @param isUser    True if the message is from the user; false for Baymax.
+     * @param text The message text.
+     * @param img The image associated with the message.
+     * @param isUser True if the message is from the user; false for Baymax.
      */
     private DialogBox(String text, Image img, boolean isUser) {
         try {
@@ -44,8 +44,8 @@ public class DialogBox extends HBox {
         dialog.setText(text);
         displayPicture.setImage(img);
         styleMessage(isUser);
-
-        if (!isUser) {  // Flip Baymax messages so that the image appears on the left
+        // Flip Baymax messages so that the image appears on the left
+        if (!isUser) {
             flip();
         }
     }
@@ -80,7 +80,7 @@ public class DialogBox extends HBox {
      * Creates a dialog box for user input.
      *
      * @param text The user input.
-     * @param img  The user's image.
+     * @param img The user's image.
      * @return A dialog box for user messages.
      */
     public static DialogBox getUserDialog(String text, Image img) {
@@ -91,7 +91,7 @@ public class DialogBox extends HBox {
      * Creates a dialog box for Baymax's normal response.
      *
      * @param text The message from Baymax.
-     * @param img  The Baymax image.
+     * @param img The Baymax image.
      * @return A dialog box for Baymax messages.
      */
     public static DialogBox getBaymaxDialog(String text, Image img) {
@@ -102,7 +102,7 @@ public class DialogBox extends HBox {
      * Creates a dialog box for error messages.
      *
      * @param text The error message.
-     * @param img  The Baymax image.
+     * @param img The Baymax image.
      * @return A dialog box styled for error messages.
      */
     public static DialogBox getErrorDialog(String text, Image img) {
