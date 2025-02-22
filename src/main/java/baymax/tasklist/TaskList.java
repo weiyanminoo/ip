@@ -186,7 +186,9 @@ public class TaskList {
      * @throws BaymaxException If the index is out of range.
      */
     public String deleteTask(int index) throws BaymaxException {
-        assert index >= 0 && index < tasks.size() : "Index out of bounds";
+        if (index < 0 || index >= tasks.size()) {
+            throw new BaymaxException("There are only " + tasks.size() + " total tasks!");
+        }
         saveState();
         Task removedTask = tasks.remove(index);
         saveTasks();
@@ -201,9 +203,10 @@ public class TaskList {
      * @throws BaymaxException If the index is out of range.
      */
     public String markTask(int index, boolean isDone) throws BaymaxException {
-        assert index >= 0 && index < tasks.size() : "Index out of bounds";
+        if (index < 0 || index >= tasks.size()) {
+            throw new BaymaxException("There are only " + tasks.size() + " total tasks!");
+        }
         Task task = tasks.get(index);
-        // Save the current state before changing it
         taskStateHistory.push(new TaskState(index, task.isDone()));
         if (isDone) {
             task.markAsDone();
@@ -278,17 +281,14 @@ public class TaskList {
      */
     public String findTask(String keyword) {
         ArrayList<Task> matchingTasks = new ArrayList<>();
-
         for (Task task : tasks) {
             if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
                 matchingTasks.add(task);
             }
         }
-
         if (matchingTasks.isEmpty()) {
             return "There aren't any matching tasks!";
         }
-
         StringBuilder response = new StringBuilder("Here are all the matching tasks:\n");
         for (int i = 0; i < matchingTasks.size(); i++) {
             response.append((i + 1)).append(". ").append(matchingTasks.get(i)).append("\n");
