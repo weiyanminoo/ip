@@ -45,11 +45,18 @@ I have added this task:
 You can mark your tasks as done or not done!
 (provide the index of your task on the list)
 
-Example: `mark 1` (use 'unmark 1' to unmark)
+Example: `mark 1`
 
 ```
 Good job on completing this task:
     [T][X] read book
+```
+
+Example: `unmark 1`
+
+```
+Oh seems like you have not completed this task:
+    [T][] read book
 ```
 
 ## Viewing a list of your tasks
@@ -63,6 +70,11 @@ Here are all your tasks:
 1. [T][X] read book 
 ```
 
+* if list is empty:
+```
+You have no tasks in your list!
+```
+
 ## Finding tasks
 
 You can search for your tasks using a keyword!
@@ -72,6 +84,11 @@ Example: `find book`
 ```
 Here are all the matching tasks:
 1. [T][X] read book 
+```
+
+* if there is no match:
+```
+There aren't any matching tasks!
 ```
 
 ## Deleting tasks
@@ -88,10 +105,26 @@ I have removed the task:
 
 ## Undoing tasks
 
-You can undo your latest command!
+You can undo your latest command! (except for 'find' and 'list' commands)
 
-Example: `undo`
+Example: `undo` (for mark/unmark commands)
+
+```
+Undo succesful! The status of this task is reverted:
+```
+
+Example: `undo` (for other commands)
 
 ```
 Undo succesful! Your last command has been reverted.
+```
+
+## Exiting app
+
+You can leave the app by typing a command
+
+Example: `bye`
+
+```
+Byeee! Take care :D
 ```

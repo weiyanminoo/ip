@@ -60,7 +60,7 @@ Example: `unmark 1`
 
 ```
 Oh seems like you have not completed this task:
-    [T][X] read book
+    [T][] read book
 ```
 
 ## Viewing a list of your tasks
