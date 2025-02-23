@@ -17,7 +17,7 @@ Java 17 installed on device
 3. Double click the .jar file to run the application.
    (*Alternatively, on terminal, change directory to the folder where the .jar file is and input `java -jar baymax.jar` to run)
 
-# Adding tasks
+### Adding tasks
 
 You can add 3 types of tasks - todo, deadline, event
 
@@ -51,7 +51,7 @@ I have added this task:
     [E][] party (on: Feb 28, 2025 from: 9:00pm to: 11:30pm)
 ```
 
-# Marking tasks
+### Marking tasks
 
 You can mark your tasks as done or not done!
 (provide the index of your task on the list)
@@ -70,7 +70,7 @@ Oh seems like you have not completed this task:
     [T][] read book
 ```
 
-# Viewing a list of your tasks
+### Viewing a list of your tasks
 
 You can view a list of all of your tasks!
 
@@ -86,7 +86,7 @@ Here are all your tasks:
 You have no tasks in your list!
 ```
 
-# Finding tasks
+### Finding tasks
 
 You can search for your tasks using a keyword!
 
@@ -102,7 +102,7 @@ Here are all the matching tasks:
 There aren't any matching tasks!
 ```
 
-# Deleting tasks
+### Deleting tasks
 
 You can delete tasks that you do not want to see on your list!
 
@@ -114,7 +114,7 @@ I have removed the task:
     [T][X] read book
 ```
 
-# Undoing tasks
+### Undoing tasks
 
 You can undo your latest command! (except for 'find' and 'list' commands)
 
@@ -130,7 +130,7 @@ Example: `undo` (for other commands)
 Undo succesful! Your last command has been reverted.
 ```
 
-# Exiting app
+### Exiting app
 
 You can leave the app by typing a command
 
